@@ -1,7 +1,7 @@
 AMPcamp-jp
 ==========
 
-1. introduction.md
+1. [はじめに](introduction.md)
 2. spark-sql.md
 3. spark-streaming.md
 4. mllib.md
