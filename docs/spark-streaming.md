@@ -81,7 +81,7 @@ Callback URL: (空欄)
 トレーニングプログラムには以下のようなScalaスクリプトのひな形があります。これを元に、順番に機能を追加し、最終的なアプリケーションを作成します。
 
 
-```scala:training/streaming/scala/Tutorial.scala
+```
 object Tutorial {
   def main(args: Array[String]) {
 
