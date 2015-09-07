@@ -20,8 +20,8 @@ scala>
 これでParquetフォーマットのデータを読み出す準備ができました。Parquetフォーマットとはカラム型データベースParquetで使用されるフォーマットです。Spark SQLはParquetフォーマットを自動的に解釈し、カラムの名前、データフォーマットを理解します。この練習ではあらかじめ用意した、Wikipediaの”berkeley”という文字が含まれる全てのページのデータを使用します。
 
 ```
-scala> val wikiData = sqlContext.parquetFile("training/data/wiki_parquet")wikiData:
-org.apache.spark.sql.DataFrame = [id: int, title: string, modified: bigint, text: string, username: string]
+scala> val wikiData = sqlContext.parquetFile("training/data/wiki_parquet")
+wikiData: org.apache.spark.sql.DataFrame = [id: int, title: string, modified: bigint, text: string, username: string]
 ```
 
 読み込まれた結果はDataFrameクラスのデータになっており、DataFrameクラスのメソッドを使用することができます。試しに何個のデータが入っているかをカウントしてみましょう。
