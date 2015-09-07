@@ -226,7 +226,7 @@ Top10のユーザーを切り出す。
 > plot(sort(counts), log="y", type="h", lwd=10, lend=2)
 ```
 
-![](./images/image13.png)
+![](./images/image19.png)
 
 *この図はXmingを使用
 
