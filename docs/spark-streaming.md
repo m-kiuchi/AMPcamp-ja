@@ -21,6 +21,7 @@ Sparkが持つSpark Streamingライブラリは非常にスケーラブルであ
 また、Twitterのアカウントがない場合は事前に取得するようにしてください。
 Twitterアカウントに携帯電話番号が登録されている必要があります。
 
+<a id="3-2"></a>
 # 3-2. Twitterのクレデンシャルを取得する
 このトレーニングではTwitterのストリームデータを使用するため、Twitterによる認証を行う必要があります。
 これにはTwitterのアカウントを取得することで使用できる、”Consumer Key”と”Consumer Secret”のペアと、”Access Token”と”Access Key”のペアが必要になります。
@@ -80,6 +81,7 @@ Callback URL: (空欄)
 # 3-3. Spark Streamingアプリケーションの作成
 トレーニングプログラムには以下のようなScalaスクリプトのひな形があります。これを元に、順番に機能を追加し、最終的なアプリケーションを作成します。
 
+`training/streaming/scala/Tutorial.scala`
 
 ```
 object Tutorial {
@@ -102,7 +104,7 @@ object Tutorial {
 ```
 
 
-上記の”(追加)”には、３－２.で作成した、それぞれのキーをセットします
+上記の”(追加)”には、[３－２.](#3-2)で作成した、それぞれのキーをセットします
 
 次に、”Your code goes here”の部分にプログラムを追加していきます。
 
