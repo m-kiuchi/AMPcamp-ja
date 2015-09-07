@@ -78,6 +78,7 @@ Callback URL: (空欄)
 
 この情報を使用して、Spark Streamingアプリケーションを作成します。
 
+<a id="3-3"></a>
 # 3-3. Spark Streamingアプリケーションの作成
 トレーニングプログラムには以下のようなScalaスクリプトのひな形があります。これを元に、順番に機能を追加し、最終的なアプリケーションを作成します。
 
@@ -326,7 +327,7 @@ $
 # 3-5. サンプルアプリケーションを改修する
 より実践的で、面白い機能を実装してみましょう。これから行うのは、「過去5分間でもっとも使用されたハッシュタグ」を抽出する機能の実装です。
 
-以下でDStreamオブジェクトにどのような変更を加えるかを記述しています。また３－３で述べた通り、全ての変更は”ssc.start()”メソッドの実行前に記述されている必要があります。
+以下でDStreamオブジェクトにどのような変更を加えるかを記述しています。また[3-3.](#3-3)で述べた通り、全ての変更は”ssc.start()”メソッドの実行前に記述されている必要があります。
 
 まず改修済みのコード全文を掲載します。緑字部分が前回からの改修部分です。
 
@@ -576,6 +577,7 @@ Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視
 入力ストリーム(Twitterのパブリックストリーム)が想定よりも少ないと思うかもしれません。これは、Twitter側が特定の業者にしか公開ストリームの全データ(firehose)を提供していないことに起因しています。
 
 参考:
+
 - Twitterがfirehose契約を解消したNTTデータを戦略的ソリューションパートナーに http://jp.techcrunch.com/2015/04/15/20150415twitter-set-to-strike-ibm-style-analytics-deal-with-ntt-data/ 
 - 日本でのデータ再販について https://blog.twitter.com/ja/2015/0415gnip 
 - New Tweets per second record, and how!(2013)2013年の時点では、firehoseデータストリームは平均約6,000tweets per second(TPS)であることがわかります。https://blog.twitter.com/2013/new-tweets-per-second-record-and-how 
