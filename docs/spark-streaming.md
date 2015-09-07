@@ -331,7 +331,8 @@ $
 まず改修済みのコード全文を掲載します。緑字部分が前回からの改修部分です。
 
 `training/streaming/scala/Tutorial.scala`
-<pre class=“prettyprint linenums:”>
+
+```
 import org.apache.spark._
 import org.apache.spark.SparkContext._
 import org.apache.spark.streaming._
@@ -367,75 +368,86 @@ object Tutorial {
     ssc.awaitTermination()
   }
 }
-</pre>
+```
 
 それでは改修部分について順番に解説します。
 
-23
-val tweets = TwitterUtils.createStream(ssc, None)
+`val tweets = TwitterUtils.createStream(ssc, None)`
 
 tweets DStreamオブジェクトストリームはTwitterUtils.createStreamメソッドによって作成されたストリームデータで、内部にRRDオブジェクトを複数含んでおり、１つのRRDオブジェクトの中は1秒間に取得されたツイートデータがTwitter4J.Statusオブジェクトの配列になって格納されています。
 
-以下は”tweets.print()”で得られるtweets DStreamオブジェクトストリームの抜粋で、１つのTwitter4J.Statusオブジェクト＝１つのツイートのデータになります。緑字部分が実際のユーザのツイートです。
+![](./images/image14.png)
 
+以下は”tweets.print()”で得られるtweets DStreamオブジェクトストリームの抜粋で、１つのTwitter4J.Statusオブジェクト＝１つのツイートのデータになります。
+緑字部分が実際のユーザのツイートです。
+
+```
 StatusJSONImpl{createdAt=Fri Jun 19 18:01:48 JST 2015, id=611821169948266496, text='BBC News - Hong Kong lawmakers reject Beijing poll plan http://t.co/JLKtx3jltA', source='<a href="http://twitter.com/download/iphone" rel="nofollow">Twitter for iPhone</a>', isTruncated=false, inReplyToStatusId=-1, inReplyToUserId=-1, isFavorited=false, inReplyToScreenName='null', geoLocation=null, place=null, retweetCount=0, isPossiblySensitive=false, contributorsIDs=[J@72342301, retweetedStatus=null, userMentionEntities=[], urlEntities=[URLEntityJSONImpl{url='http://t.co/JLKtx3jltA', expandedURL='http://www.bbc.com/news/world-asia-33179247', displayURL='bbc.com/news/world-asi…'}], hashtagEntities=[], mediaEntities=[], currentUserRetweetId=-1, user=UserJSONImpl{id=2982028466, name='sunny', screenName='Iampju93Sunny', location='', description='null', isContributorsEnabled=false, profileImageUrl='http://pbs.twimg.com/profile_images/555345662884061184/PImnxNip_normal.jpeg', profileImageUrlHttps='https://pbs.twimg.com/profile_images/555345662884061184/PImnxNip_normal.jpeg', url='null', isProtected=false, followersCount=210, status=null, profileBackgroundColor='C0DEED', profileTextColor='333333', profileLinkColor='0084B4', profileSidebarFillColor='DDEEF6', profileSidebarBorderColor='C0DEED', profileUseBackgroundImage=true, showAllInlineMedia=false, friendsCount=617, createdAt=Wed Jan 14 16:53:38 JST 2015, favouritesCount=0, utcOffset=-1, timeZone='null', profileBackgroundImageUrl='http://abs.twimg.com/images/themes/theme1/bg.png', profileBackgroundImageUrlHttps='https://abs.twimg.com/images/themes/theme1/bg.png', profileBackgroundTiled=false, lang='ko', statusesCount=400, isGeoEnabled=false, isVerified=false, translator=false, listedCount=1, isFollowRequestSent=false}}
+```
 
-24
-val statuses = tweets.map(status => status.getText())
+`val statuses = tweets.map(status => status.getText())`
 
-この命令(map(getText()))で、tweets DStream内の個々のRDDに含まれるデータ(Twitter4J.Statusオブジェクトの配列の個々の要素)が変数statusにマップされ、getText()メソッドがコールされます。結果のツイート本文(上記緑字部分、String型)は配列となり、元のRRDオブジェクトに格納されます。
+この命令(map(getText()))で、tweets DStream内の個々のRDDに含まれるデータ(Twitter4J.Statusオブジェクトの配列の個々の要素)が変数statusにマップされ、getText()メソッドがコールされます。
+結果のツイート本文(上記緑字部分、String型)は配列となり、元のRRDオブジェクトに格納されます。
+
+![](./images/image18.png)
 
 上記の例の場合、statuses DStream-RRD-Array内要素のデータは以下のようになります。
 
-BBC News - Hong Kong lawmakers reject Beijing poll plan http://t.co/JLKtx3jltA
+`BBC News - Hong Kong lawmakers reject Beijing poll plan http://t.co/JLKtx3jltA`
 
-
-25
-val words = statuses.flatMap(status => status.split(" "))
+`val words = statuses.flatMap(status => status.split(" "))`
 
 この命令(flatMap{})で、ツイート本文を半角スペースで別々に分けて、個々を配列として、再度RDDとして格納します。
 
+![](./images/image01.png)
 
-26
-val hashtags = words.filter(word => word.startsWith("#"))
+`val hashtags = words.filter(word => word.startsWith("#"))`
 
-最後に、配列の個々の要素(文字列)の先頭が”#”であるものだけを抽出し、同様にRDDに格納します
+最後に、配列の個々の要素(文字列)の先頭が”#”であるものだけを抽出し、同様にRDDに格納します。
 
+![](./images/image02.png)
 
-27
-val counts = hashtags.map(tag => (tag, 1)).reduceByKeyAndWindow(_ + _, _ - _, Seconds(60*5), Seconds(1))
+`val counts = hashtags.map(tag => (tag, 1)).reduceByKeyAndWindow(_ + _, _ - _, Seconds(60*5), Seconds(1))`
 
-　ここでは最新5分間のそれぞれのハッシュタグの数を合計します。一般的には、過去5分間のそれぞれのハッシュタグの個数を合計すればよいのですが、注意しなければいけないのは、このストリームデータで最新5分間のものとして取り扱うRDDが常に変動しているということです。
+ここでは最新5分間のそれぞれのハッシュタグの数を合計します。一般的には、過去5分間のそれぞれのハッシュタグの個数を合計すればよいのですが、注意しなければいけないのは、このストリームデータで最新5分間のものとして取り扱うRDDが常に変動しているということです。
 
-　Sparkにおいてこれを上手く取り扱う関数が”reduceByKeyAndWindow”になります。reduceByKeyAndWindow関数は4つの引数をとります。
-新しくウィンドウに入った要素に対して行う処理
-ウィンドウから外れた要素に対して行う処理
-関数が扱う最大時間
-更新単位
+Sparkにおいてこれを上手く取り扱う関数が”reduceByKeyAndWindow”になります。reduceByKeyAndWindow関数は4つの引数をとります。
 
-　まずウィンドウ(=上記c。合計算出期間のこと)は0から始まり、時間の新しい方向に上記d分伸びます。その結果ウィンドウ内に入った個々の要素に対して上記aで定義した関数を実行します。その後ウィンドウは時間の古い方から上記d分縮み、その結果外れた要素に対して上記bで定義された関数を実行します。
+a. 新しくウィンドウに入った要素に対して行う処理
+
+b. ウィンドウから外れた要素に対して行う処理
+
+c. 関数が扱う最大時間
+
+d. 更新単位
+
+まずウィンドウ(=上記c。合計算出期間のこと)は0から始まり、時間の新しい方向に上記d分伸びます。
+その結果ウィンドウ内に入った個々の要素に対して上記aで定義した関数を実行します。
+その後ウィンドウは時間の古い方から上記d分縮み、その結果外れた要素に対して上記bで定義された関数を実行します。
+
 まずhashtags DStream-RDD-Array内の個々の要素(文字列)は、”(文字列, 1(<-整数))”というタプル型に変換されます
 
-　結果として以下の図に示すように、新たに作成されるcounts DStreamにはreduceByKey AndWindow関数によって合計された、ウィンドウ内のハッシュタグとその個数の合計が入っています。ただし、まだ個数順に並び替えられていないため、Top10を出すためにはもう少し処理を行う必要があります。
+結果として以下の図に示すように、新たに作成されるcounts DStreamにはreduceByKey AndWindow関数によって合計された、ウィンドウ内のハッシュタグとその個数の合計が入っています。
+ただし、まだ個数順に並び替えられていないため、Top10を出すためにはもう少し処理を行う必要があります。
 
+![](./images/image21.png)
 
-
-28
-val sortedCounts = counts.map{case(tag, count) => (count, tag) }.transform(rdd => rdd.sortByKey(false))
+`val sortedCounts = counts.map{case(tag, count) => (count, tag) }.transform(rdd => rdd.sortByKey(false))`
 
 counts DStreamの配列をハッシュタグの個数順に並べ直すため、まずmapで(ハッシュタグ(文字列), 個数)のタプルを(個数, ハッシュタグ(文字列))に入れ替えます。そののちにtransformでcount順にソートします。
 
+![](./images/image11.png)
 
-
-29
-sortedCounts.foreach(rdd => println("\nTop 10 hashtags:\n" + rdd.take(10).mkString("\n")))
+`sortedCounts.foreach(rdd => println("\nTop 10 hashtags:\n" + rdd.take(10).mkString("\n")))`
 
 最後にRDD内の配列からtake(10)で先頭10個を取り出し、mkString(“\n”)で、区切り文字を改行(LF)にして、出力します。
 
-
+![](./images/image15.png)
 
 修正したプログラムは再度コンパイルします
 
+```
 $ ../../../spark-1.4.1/sbt/sbt assembly
 Getting org.scala-sbt sbt 0.13.8 ...
 :: retrieving :: org.scala-sbt#boot-app
@@ -451,10 +463,11 @@ Getting Scala 2.10.4 (for sbt)...
 [info] Done packaging.
 [success] Total time: 42 s, completed 2015/06/14 23:48:38
 $
+```
 
 コンパイルした実行バイナリをspark-submitコマンドでSparkに投入します
 
-$ ../../../spark-1.4.1/bin/spark-submit --class Tutorial target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar
+`$ ../../../spark-1.4.1/bin/spark-submit --class Tutorial target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar`
 
 以下のようにハッシュタグのTop10が表示されます。終了するにはCtrl+Cを押します。
 
@@ -500,7 +513,69 @@ $
 ```
 
 # 3-6. ストリーム処理の分散
+ストリーム処理における処理の単位はRDDになります。
+つまりRDD１つについて１つのジョブが生成されます。
+
+また、SparkのTransform命令は遅延評価(Lazy Evaluation)によって即時には実行されません。
+Action命令が実行された時に実際に処理が開始されます。
+
+上記サンプルでTransform命令を青字、Action命令を赤字で色分けすると、以下の要になります。
+つまり実際にはそれぞれの入力RDDに大して、28行目のtransform、29行目のforeachでそれぞれジョブが実行されることになります。
+
+`training/streaming/scala/Tutorial.scala`
+
+```
+import org.apache.spark._
+import org.apache.spark.SparkContext._
+import org.apache.spark.streaming._
+import org.apache.spark.streaming.twitter._
+import org.apache.spark.streaming.StreamingContext._
+import TutorialHelper._
+
+object Tutorial {
+  def main(args: Array[String]) {
+    
+    // Checkpoint directory
+    val checkpointDir = TutorialHelper.getCheckpointDirectory()
+
+    // Configure Twitter credentials
+    val apiKey = "bNcABXXXXXXXXXXXXX5dCpHR"
+    val apiSecret = "dZ9yDEBpmLJhOXXXXXXXXXXXXXXXXXXXft2xzOlfH"
+    val accessToken = "NNNNNNNN-RZH5M1MFxTNXXXXXXXXXXXXXXXXXXl9tl2"
+    val accessTokenSecret = "UBRkxVeTXXXXXXXXXXXXXXXXXXXXX0aOn0kuT6FIfUhpxst"
+    TutorialHelper.configureTwitterCredentials(apiKey, apiSecret, accessToken, accessTokenSecret)
+
+    // Your code goes here
+    val ssc = new StreamingContext(new SparkConf(), Seconds(1))
+    val tweets = TwitterUtils.createStream(ssc, None)
+    val statuses = tweets.map(status => status.getText())
+    val words = statuses.flatMap(status => status.split(" "))
+    val hashtags = words.filter(word => word.startsWith("#"))
+    val counts = hashtags.map(tag => (tag, 1)).reduceByKeyAndWindow(_ + _, _ - _, Seconds(60*5), Seconds(1))
+    val sortedCounts = counts.map{case(tag, count) => (count, tag) }.transform(rdd => rdd.sortByKey(false))
+    sortedCounts.foreach(rdd => println("\nTop 10 hashtags:\n" + rdd.take(9).mkString("\n")))
+    //statuses.print()
+    ssc.checkpoint(checkpointDir)
+    ssc.start()
+    ssc.awaitTermination()
+  }
+}
+```
+
+同様の状況をブラウザからリアルタイムで視認することができます。
+http://<sparkホスト>:4040で確認すると、以下のようにstart, transform, foreachでそれぞれバッチが動作していることを確認することができます。
+
+![](./images/image16.png)
 
 # 3-7. ストリームのリアルタイムな状況確認
+Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視化によって、状態を確認することが可能です。http://<sparkホスト>:4040/streaming で、入力ストリームや、処理時間、処理の遅延を確認することができます。
+
+![](./images/image06.png)
 
 # 【備考】 入力ストリーム量について
+入力ストリーム(Twitterのパブリックストリーム)が想定よりも少ないと思うかもしれません。これは、Twitter側が特定の業者にしか公開ストリームの全データ(firehose)を提供していないことに起因しています。
+
+参考:
+- Twitterがfirehose契約を解消したNTTデータを戦略的ソリューションパートナーに http://jp.techcrunch.com/2015/04/15/20150415twitter-set-to-strike-ibm-style-analytics-deal-with-ntt-data/ 
+- 日本でのデータ再販について https://blog.twitter.com/ja/2015/0415gnip 
+- New Tweets per second record, and how!(2013)2013年の時点では、firehoseデータストリームは平均約6,000tweets per second(TPS)であることがわかります。https://blog.twitter.com/2013/new-tweets-per-second-record-and-how 
