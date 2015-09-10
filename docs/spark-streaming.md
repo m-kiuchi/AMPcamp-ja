@@ -33,11 +33,11 @@ Twitterアカウントに携帯電話番号が登録されている必要があ�
 
 それではTwitterのクレデンシャルを取得しましょう。ブラウザで[Twitterのアプリケーション管理ページ](https://dev.twitter.com/apps)を開きます。(必要に応じてTwitterにサインインしてください。なお手順を完了するためには、事前にTwitterアカウントに携帯電話番号が登録されている必要があります。)
 
-![Twitter API](./images/image17.png)
+![image17](./images/image17.png)
 
 このトレーニングのアプリケーションのために、新しくクレデンシャルを作成します。画面右上の[Create New App]ボタンをクリックします。
 
-![Create an application](./images/image24.png)
+![image24](./images/image24.png)
 
 画面内に必要事項を入力します。このトレーニングでは以下のように入力します。
 
@@ -50,14 +50,15 @@ Twitterアカウントに携帯電話番号が登録されている必要があ�
 
 作成が完了すると以下のようなページに遷移します。
 
-![](./images/image13.png)
+![image13](./images/image13.png)
 
 上記ページ中の[Keys and Access Tokens]タブを開きます。
 すでに”Consumer Key(API Key)”および”Consumer Secret(API Secret)”が生成されていることが分かります。
 
 注意：特に”Consumer Key”および”Consumer Secret”は安全に管理し、他の人と共有しないようにしてください。”Consumer Key(API Key)”および”Consumer Secret(API Secret)”の組み合わせで、他の人があたかもあなたのアカウントでTwitterの認証を通過できる可能性があります。
 
-![](./images/image05.png)
+![image05](./images/image05.png)
+![image08](./images/image08.png)
 
 ページ下部の[Create my access token]ボタンを押します。
 
@@ -65,7 +66,7 @@ Twitterアカウントに携帯電話番号が登録されている必要があ�
 
 注意：”Access Token”と”Access Key”のペアは安全に管理し、他の人と共有しないようにしてください。”Access Token”と”Access Key”の組み合わせで、他の人があたかもあなたのアカウントでTwitterのAPIを利用できる可能性があります。
 
-![](./images/image08.png)
+![image00](./images/image00.png)
 
 ここまでの手順で以下の情報が入手できました。
 
