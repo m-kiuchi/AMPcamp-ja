@@ -379,7 +379,7 @@ object Tutorial {
 
 tweets DStreamオブジェクトストリームはTwitterUtils.createStreamメソッドによって作成されたストリームデータで、内部にRRDオブジェクトを複数含んでおり、１つのRRDオブジェクトの中は1秒間に取得されたツイートデータがTwitter4J.Statusオブジェクトの配列になって格納されています。
 
-![](./images/image14.png)
+![image14](./images/image14.png)
 
 以下は”tweets.print()”で得られるtweets DStreamオブジェクトストリームの抜粋で、１つのTwitter4J.Statusオブジェクト＝１つのツイートのデータになります。
 text=''内に書かれているのが実際のユーザのツイートです。
@@ -394,7 +394,7 @@ StatusJSONImpl{createdAt=Fri Jun 19 18:01:48 JST 2015, id=611821169948266496, te
 この命令(map(getText()))で、tweets DStream内の個々のRDDに含まれるデータ(Twitter4J.Statusオブジェクトの配列の個々の要素)が変数statusにマップされ、getText()メソッドがコールされます。
 結果のツイート本文(String型)は配列となり、元のRRDオブジェクトに格納されます。
 
-![](./images/image18.png)
+![image18](./images/image18.png)
 
 上記の例の場合、statuses DStream-RRD-Array内要素のデータは以下のようになります。
 
@@ -404,13 +404,13 @@ StatusJSONImpl{createdAt=Fri Jun 19 18:01:48 JST 2015, id=611821169948266496, te
 
 この命令(flatMap{})で、ツイート本文を半角スペースで別々に分けて、個々を配列として、再度RDDとして格納します。
 
-![](./images/image01.png)
+![image01](./images/image01.png)
 
 `val hashtags = words.filter(word => word.startsWith("#"))`
 
 最後に、配列の個々の要素(文字列)の先頭が”#”であるものだけを抽出し、同様にRDDに格納します。
 
-![](./images/image02.png)
+![image02](./images/image02.png)
 
 `val counts = hashtags.map(tag => (tag, 1)).reduceByKeyAndWindow(_ + _, _ - _, Seconds(60*5), Seconds(1))`
 
@@ -432,19 +432,19 @@ d. 更新単位
 結果として以下の図に示すように、新たに作成されるcounts DStreamにはreduceByKey AndWindow関数によって合計された、ウィンドウ内のハッシュタグとその個数の合計が入っています。
 ただし、まだ個数順に並び替えられていないため、Top10を出すためにはもう少し処理を行う必要があります。
 
-![](./images/image21.png)
+![image21](./images/image21.png)
 
 `val sortedCounts = counts.map{case(tag, count) => (count, tag) }.transform(rdd => rdd.sortByKey(false))`
 
 counts DStreamの配列をハッシュタグの個数順に並べ直すため、まずmapで(ハッシュタグ(文字列), 個数)のタプルを(個数, ハッシュタグ(文字列))に入れ替えます。そののちにtransformでcount順にソートします。
 
-![](./images/image11.png)
+![image11](./images/image11.png)
 
 `sortedCounts.foreach(rdd => println("\nTop 10 hashtags:\n" + rdd.take(10).mkString("\n")))`
 
 最後にRDD内の配列からtake(10)[[6]](#[6])で先頭10個を取り出し、mkString(“\n”)[[7]](#[7])で、区切り文字を改行(LF)にして、出力します。
 
-![](./images/image15.png)
+![image15](./images/image15.png)
 
 修正したプログラムを再度コンパイルします
 
@@ -565,12 +565,12 @@ object Tutorial {
 同様の状況をブラウザからリアルタイムで視認することができます。
 http://<sparkホスト>:4040で確認すると、以下のようにstart, transform, foreachでそれぞれバッチが動作していることを確認することができます。
 
-![](./images/image16.png)
+![image16](./images/image16.png)
 
 ## 3-7. ストリームのリアルタイムな状況確認
 Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視化によって、状態を確認することが可能です。http://\<sparkホスト\>:4040/streaming で、入力ストリームや、処理時間、処理の遅延を確認することができます。
 
-![](./images/image06.png)
+![image06](./images/image06.png)
 
 ## 【備考】 入力ストリーム量について
 入力ストリーム(Twitterのパブリックストリーム)が想定よりも少ないと思うかもしれません。これは、Twitter側が特定の業者にしか公開ストリームの全データ(firehose)を提供していないことに起因しています。
