@@ -189,7 +189,7 @@ object Tutorial {
 # 3-4. サンプルアプリケーションのコンパイル・実行
 さて、作成したプログラムを実行してみます。
 
-SBTのプロジェクトファイルを修正(赤字部分)します。
+SBTのプロジェクトファイルを修正(<font color="red">赤字部分</font>)します。
 
 `training/streaming/scala/build.sbt`
 
