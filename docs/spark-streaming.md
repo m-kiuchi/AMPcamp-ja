@@ -41,12 +41,10 @@ Twitterアカウントに携帯電話番号が登録されている必要があ�
 
 画面内に必要事項を入力します。このトレーニングでは以下のように入力します。
 
-Name: [twitterのハンドル名]-test<br>
-Description: Apache Spark Streaming test
-
-Website: http://www.yahoo.co.jp/ (なんでもよいが、ブラウザで開けるページが好ましい)
-
-Callback URL: (空欄)
+- Name: [twitterのハンドル名]-test
+- Description: Apache Spark Streaming test
+- Website: http://www.yahoo.co.jp/ (なんでもよいが、ブラウザで開けるページが好ましい)
+- Callback URL: (空欄)
 
 全ての項目を埋めたら、”Developer Aggreement”にチェックを入れ、[Create your Twitter application]をクリックします。
 
