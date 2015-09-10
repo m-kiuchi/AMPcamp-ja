@@ -1,4 +1,4 @@
-# Spark SQL
+# 2. Spark SQL
 Spark SQLはSparkの中でも最も新しいコンポーネントであり、SQLに似たインターフェイスを提供します。
 
 まずSpark Shellを起動します
