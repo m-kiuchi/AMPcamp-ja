@@ -168,7 +168,7 @@ object Tutorial {
     val checkpointDir = TutorialHelper.getCheckpointDirectory()
 
     // Configure Twitter credentials
-    val apiKey = "<font color="green">bNcABXXXXXXXXXXXXX5dCpHR</font>"
+    val apiKey = "bNcABXXXXXXXXXXXXX5dCpHR"
     val apiSecret = "dZ9yDEBpmLJhOXXXXXXXXXXXXXXXXXXXft2xzOlfH"
     val accessToken = "NNNNNNNN-RZH5M1MFxTNXXXXXXXXXXXXXXXXXXl9tl2"
     val accessTokenSecret = "UBRkxVeTXXXXXXXXXXXXXXXXXXXXX0aOn0kuT6FIfUhpxst"
@@ -189,7 +189,7 @@ object Tutorial {
 # 3-4. サンプルアプリケーションのコンパイル・実行
 さて、作成したプログラムを実行してみます。
 
-SBTのプロジェクトファイルを修正(<font color="red">赤字部分</font>)します。
+SBTのプロジェクトファイルを修正(赤字部分)します。
 
 `training/streaming/scala/build.sbt`
 
