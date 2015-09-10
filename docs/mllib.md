@@ -242,7 +242,9 @@ libraryDependencies += "org.apache.spark" % "spark-mllib_2.10" % "1.4.1" % "prov
 
 `training/machine-learning/scala/project/build.properties`
 
-`sbt.version=0.13.8`
+```
+sbt.version=0.13.8
+```
 
 以下のようにサンプルデータを作成します。
 
