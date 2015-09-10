@@ -586,14 +586,18 @@ Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視
 ----------------------------------------------
 <a id="[2]"></a>
 [2] SBT: “Simple Build Tool”の略。Scala および Javaプロジェクトで使用される簡便なビルドツール。(参照: [https://github.com/harrah/xsbt/wiki](https://github.com/harrah/xsbt/wiki) , [http://www.scala-sbt.org/](http://www.scala-sbt.org/) )
+
 <a id="[3]"></a>
 [3] [DStreamクラス](http://spark.apache.org/docs/0.7.3/api/streaming/spark/streaming/DStream.html): Spark Streaming Discretized Stream(Sparkにおける離散ストリーム)。このクラスを親として、個々のデータからRDDが生成される。 
+
 <a id="[4]"></a>
 [4] [DStream.printメソッド](https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.streaming.dstream.DStream): print(Int(20))とすると20個になる。
+
 <a id="[5]"></a>
 [5] ハッシュタグ: Twitterのメッセージ内に用いられる”#”に続く文字列のことを指し、これによりTwitter内のメッセージをグループ分けして表示することができる機能。 (参考: [https://support.twitter.com/articles/20170159-](https://support.twitter.com/articles/20170159-) )
+
 <a id="[6]></a>
 [6] [take()](http://www.ne.jp/asahi/hishidama/home/tech/scala/collection/method.html#take): scala命令。配列(コレクション)の先頭から任意の個数を取り出す。
+
 <a id="[7]"></a>
 [7] [mkString(n)](http://www.ne.jp/asahi/hishidama/home/tech/scala/collection/method.html#h_string): scala命令。配列をnで指定した区切り文字で区切って文字列に変換する。
-
