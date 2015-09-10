@@ -593,8 +593,8 @@ Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視
 <a id="[5]"></a>
 [5] ハッシュタグ: Twitterのメッセージ内に用いられる”#”に続く文字列のことを指し、これによりTwitter内のメッセージをグループ分けして表示することができる機能。 (参考: [https://support.twitter.com/articles/20170159-](https://support.twitter.com/articles/20170159-) )
 
-<a id="[6]></a>
-[6] [take()](http://www.ne.jp/asahi/hishidama/home/tech/scala/collection/method.html#take): scala命令。配列(コレクション)の先頭から任意の個数を取り出す。
+<a id="[6]"></a>
+[6] [take(n)](http://www.ne.jp/asahi/hishidama/home/tech/scala/collection/method.html#take): scala命令。配列(コレクション)の先頭から任意の個数を取り出す。
 
 <a id="[7]"></a>
 [7] [mkString(n)](http://www.ne.jp/asahi/hishidama/home/tech/scala/collection/method.html#h_string): scala命令。配列をnで指定した区切り文字で区切って文字列に変換する。
