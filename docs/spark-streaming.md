@@ -9,7 +9,7 @@ Sparkが持つSpark Streamingライブラリは非常にスケーラブルであ
 
 |ファイル名                                   |内容                                                     |
 |:--------------------------------------------|:--------------------------------------------------------|
-|training/streaming/scala/build.sbt           |SBTプロジェクトファイル                                  |
+|training/streaming/scala/build.sbt           |SBT[[2]](#[2])プロジェクトファイル                                  |
 |training/streaming/scala/Tutorial.scala      |本トレーニングで実際に編集・コンパイル・実行するファイル |
 |training/streaming/scala/TutorialHelper.scala|Tutorial.scalaから呼び出されるヘルパー関数のファイル     |
 
@@ -119,7 +119,7 @@ object Tutorial {
 
 `val tweets = TwitterUtils.createStream(ssc, None)`
 
-変数tweetsはDStreamクラスで表現されたTwitterのステータスの一覧です。
+変数tweetsはDStreamクラス[[3]](#[3])で表現されたTwitterのステータスの一覧です。
 より具体的に言うのであれば、変数tweetsは[twitter4j.Statusクラス](http://twitter4j.org/javadoc/twitter4j/Status.html)を内部に持つRDDオブジェクトの連続(配列)であると言うことができます。 
 
 ここまでで、上記にセットした認証情報を元にアプリケーションはTwitterに接続できるはずです。正しく接続されたかを確認するために、ステータス(=実際のツイート内容)を書き出してみます。
@@ -135,7 +135,7 @@ statuses.print()
 
 tweets.mapメソッドにより、tweetsストリームにおける個々のstatusプロパティは、getText()メソッドによって文字列に変換されたのちに、statusesという名前のDStreamオブジェクトにそれぞれマッピングされます。
 
-printメソッドは、statuses DStreamオブジェクトの最初の10個を出力します。これは1秒ごとに実行されます。
+printメソッドは、statuses DStreamオブジェクトの最初の10個を出力します[[4]](#[4])。これは1秒ごとに実行されます。
 
 またストリーミングにおいては定期的にチェックポイントデータをディスクに書き出し、データの損失を防止します。
 
@@ -325,7 +325,8 @@ $
 ```
 
 # 3-5. サンプルアプリケーションを改修する
-より実践的で、面白い機能を実装してみましょう。これから行うのは、「過去5分間でもっとも使用されたハッシュタグ」を抽出する機能の実装です。
+より実践的で、面白い機能を実装してみましょう。
+これから行うのは、「過去5分間でもっとも使用されたハッシュタグ[[5]](#[5])」を抽出する機能の実装です。
 
 以下でDStreamオブジェクトにどのような変更を加えるかを記述しています。また[3-3.](#3-3)で述べた通り、全ての変更は”ssc.start()”メソッドの実行前に記述されている必要があります。
 
@@ -442,7 +443,7 @@ counts DStreamの配列をハッシュタグの個数順に並べ直すため、
 
 `sortedCounts.foreach(rdd => println("\nTop 10 hashtags:\n" + rdd.take(10).mkString("\n")))`
 
-最後にRDD内の配列からtake(10)で先頭10個を取り出し、mkString(“\n”)で、区切り文字を改行(LF)にして、出力します。
+最後にRDD内の配列からtake(10)[[6]](#[6])で先頭10個を取り出し、mkString(“\n”)[[7]](#[7])で、区切り文字を改行(LF)にして、出力します。
 
 ![](./images/image15.png)
 
@@ -517,8 +518,8 @@ $
 ストリーム処理における処理の単位はRDDになります。
 つまりRDD１つについて１つのジョブが生成されます。
 
-また、SparkのTransform命令は遅延評価(Lazy Evaluation)によって即時には実行されません。
-Action命令が実行された時に実際に処理が開始されます。
+また、Sparkの[Transform命令](https://spark.apache.org/docs/latest/programming-guide.html#transformations)は遅延評価(Lazy Evaluation)によって即時には実行されません。
+[Action命令](https://spark.apache.org/docs/latest/programming-guide.html#actions)が実行された時に実際に処理が開始されます。
 
 上記サンプルでTransform命令を青字、Action命令を赤字で色分けすると、以下の要になります。
 つまり実際にはそれぞれの入力RDDに大して、28行目のtransform、29行目のforeachでそれぞれジョブが実行されることになります。
@@ -581,3 +582,18 @@ Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視
 - Twitterがfirehose契約を解消したNTTデータを戦略的ソリューションパートナーに http://jp.techcrunch.com/2015/04/15/20150415twitter-set-to-strike-ibm-style-analytics-deal-with-ntt-data/ 
 - 日本でのデータ再販について https://blog.twitter.com/ja/2015/0415gnip 
 - New Tweets per second record, and how!(2013)2013年の時点では、firehoseデータストリームは平均約6,000tweets per second(TPS)であることがわかります。https://blog.twitter.com/2013/new-tweets-per-second-record-and-how 
+
+----------------------------------------------
+<a id="[2]"></a>
+[2] SBT: “Simple Build Tool”の略。Scala および Javaプロジェクトで使用される簡便なビルドツール。(参照: [https://github.com/harrah/xsbt/wiki](https://github.com/harrah/xsbt/wiki) , [http://www.scala-sbt.org/](http://www.scala-sbt.org/) )
+<a id="[3]"></a>
+[3] [DStreamクラス](http://spark.apache.org/docs/0.7.3/api/streaming/spark/streaming/DStream.html): Spark Streaming Discretized Stream(Sparkにおける離散ストリーム)。このクラスを親として、個々のデータからRDDが生成される。 
+<a id="[4]"></a>
+[4] [DStream.printメソッド](https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.streaming.dstream.DStream): print(Int(20))とすると20個になる。
+<a id="[5]"></a>
+[5] ハッシュタグ: Twitterのメッセージ内に用いられる”#”に続く文字列のことを指し、これによりTwitter内のメッセージをグループ分けして表示することができる機能。 (参考: [https://support.twitter.com/articles/20170159-](https://support.twitter.com/articles/20170159-) )
+<a id="[6]></a>
+[6] [take()](http://www.ne.jp/asahi/hishidama/home/tech/scala/collection/method.html#take): scala命令。配列(コレクション)の先頭から任意の個数を取り出す。
+<a id="[7]"></a>
+[7] [mkString(n)](http://www.ne.jp/asahi/hishidama/home/tech/scala/collection/method.html#h_string): scala命令。配列をnで指定した区切り文字で区切って文字列に変換する。
+
