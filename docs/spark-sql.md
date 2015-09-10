@@ -27,7 +27,7 @@ scala> val wikiData = sqlContext.parquetFile("training/data/wiki_parquet")
 wikiData: org.apache.spark.sql.DataFrame = [id: int, title: string, modified: bigint, text: string, username: string]
 ```
 
-読み込まれた結果はDataFrameクラス[[2]](#[注釈2])のデータになっており、DataFrameクラスのメソッドを使用することができます。試しに何個のデータが入っているかをカウントしてみましょう。
+読み込まれた結果は[DataFrameクラス](http://spark.apache.org/docs/latest/sql-programming-guide.html#dataframes)のデータになっており、DataFrameクラスのメソッドを使用することができます。試しに何個のデータが入っているかをカウントしてみましょう。
 
 ```
 scala> wikiData.count()
@@ -78,8 +78,5 @@ scala>
 ```
 
 ------------------------------
-<a id="[注釈1]"></a>
-[注釈1]: Apache Parquet: http://parquet.apache.org/ : カラム型データをHadoop内部に持つことができるデータベース (参考: http://www.publickey1.jp/blog/13/hadoopparquettwitter.html )
-
-<a id="[注釈2]"></a>
-[注釈2]:  http://spark.apache.org/docs/latest/sql-programming-guide.html#dataframes 
+<a id="[1]"></a>
+[1]: Apache Parquet: http://parquet.apache.org/ : カラム型データをHadoop内部に持つことができるデータベース (参考: http://www.publickey1.jp/blog/13/hadoopparquettwitter.html )
