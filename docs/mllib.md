@@ -41,7 +41,7 @@ $ ls -lh
 協調フィルタリングとは、リコメンドエンジンに一般的に用いられているアルゴリズムで、表の中の空欄を、実際に埋めた場合にそうなると思われる値を算出します。
 ここでいう”表”とは今回の場合、”ユーザ”と”映画”をそれぞれ軸に持ち、それぞれの欄に”評価”が入っている表になります。
 Sparkは現時点では「モデルベース協調フィルタリング」を実装しており、それによって表中の空欄に入る値を算出します。
-その際に、同様にSparkが有する「交互最小二乗法(Alternating Least Squares, ALS)」によって潜在変数セットを算出し、傾向性を算出します。
+その際に、同様にSparkが有する「交互最小二乗法(Alternating Least Squares, ALS)[[8]](#[8])」によって潜在変数セットを算出し、傾向性を算出します。
 
 ![](./images/image20.png)
 
@@ -557,3 +557,7 @@ val meanRating = training.union(validation).map(_.rating).mean
 このチュートリアルはトレーニングセットにあなたの評価を付け加えます。お勧めを出すより良い方法はまずMatrix Factorizationモデルをトレーニングして、モデルにあなたの評価を備えます。もしこの方法に興味が湧きましたらMatrixFactorizationModelの実行方法をみて新しいユーザのためにモデルに更新する方法を確認してください。
 
 もしあなたへのお勧めやソースコードが先に見たいならば、答えはmachine-learning/scala/solutionに載っています。
+
+--------------------------
+<a id="[8]"></a>
+[8] ALS: 交互最小二乗法 [参照1](https://en.wikiversity.org/wiki/Least-Squares_Method#Lesson_1:_Introduction_to_Least-Squares_Method) [参照2](https://ja.wikipedia.org/wiki/%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%97%E6%B3%95)
