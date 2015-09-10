@@ -185,10 +185,10 @@ object Tutorial {
 ```
 
 ## 3-4. サンプルアプリケーションのコンパイル・実行
-さて、作成したプログラムを実行してみます。
+さて、作成したプログラムをコンパイルして実行してみます。
 
-SBTのプロジェクトファイルを修正します。
-Scalaのバージョンとライブラリを設定します。
+まず、SBTのプロジェクトファイルを修正します。
+ScalaのバージョンとSparkのライブラリを設定します。
 
 `training/streaming/scala/build.sbt`
 
@@ -417,12 +417,9 @@ StatusJSONImpl{createdAt=Fri Jun 19 18:01:48 JST 2015, id=611821169948266496, te
 
 Sparkにおいてこれを上手く取り扱う関数が”reduceByKeyAndWindow”になります。reduceByKeyAndWindow関数は4つの引数をとります。
 
-a. 新しくウィンドウに入った要素に対して行う処理
-
-b. ウィンドウから外れた要素に対して行う処理
-
-c. 関数が扱う最大時間
-
+a. 新しくウィンドウに入った要素に対して行う処理<br>
+b. ウィンドウから外れた要素に対して行う処理<br>
+c. 関数が扱う最大時間<br>
 d. 更新単位
 
 まずウィンドウ(=上記c。合計算出期間のこと)は0から始まり、時間の新しい方向に上記d分伸びます。
@@ -448,7 +445,7 @@ counts DStreamの配列をハッシュタグの個数順に並べ直すため、
 
 ![](./images/image15.png)
 
-修正したプログラムは再度コンパイルします
+修正したプログラムを再度コンパイルします
 
 ```
 $ ../../../spark-1.4.1/sbt/sbt assembly
@@ -489,8 +486,7 @@ Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
 ….
 Top 10 hashtags in last 5 minutes:
 (1,#Féile2015)
-(1,#غردلي
-)
+(1,#غردلي)
 15/06/28 21:12:41 INFO WriteAheadLogManager : Attempting to clear 0 old log files in file:/home/kiuchi/twst/checkpoint/receivedBlockMetadata older than 1435493241000: 
 15/06/28 21:12:41 INFO WriteAheadLogManager : Cleared log files in file:/home/kiuchi/twst/checkpoint/receivedBlockMetadata older than 1435493241000
 
@@ -523,7 +519,7 @@ $
 [Action命令](https://spark.apache.org/docs/latest/programming-guide.html#actions)が実行された時に実際に処理が開始されます。
 
 上記サンプルでTransform命令は`.map(...)` `.flatMap(...)` `.filter(...)` `.reduceByKeyAndWindow(...)` `.sortByKey(...)`、Action命令は`.transform(...)` `.foreach(...)` `.take(...)`の部分です。
-つまり実際にはそれぞれの入力RDDに大して、28行目のtransform、29行目のforeachでそれぞれジョブが実行されることになります。
+つまり実際にはそれぞれの入力RDDに大して、28行目の`.transform(...)`、29行目の`.foreach(..)`でそれぞれジョブが実行されることになります。
 
 `training/streaming/scala/Tutorial.scala`
 
