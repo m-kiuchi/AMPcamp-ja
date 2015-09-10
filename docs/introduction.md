@@ -22,7 +22,7 @@ Linuxマシン：以下の要件を満たしていること
 # yum -y update
 # yum -y install wget unzip
 最新のJDKパッケージをアップロード
-\# yum --nogpgcheck localinstall jdk-8u60-linux-x64.rpm
+# yum --nogpgcheck localinstall jdk-8u60-linux-x64.rpm
 rootから一般ユーザに変更
 $ wget http://ftp.riken.jp/net/apache/spark/spark-1.4.1/spark-1.4.1.tgz
 $ tar xzvf spark-1.4.1.tgz
