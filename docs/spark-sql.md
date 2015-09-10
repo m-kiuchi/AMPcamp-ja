@@ -79,4 +79,4 @@ scala>
 
 ------------------------------
 <a id="[1]"></a>
-[1] Apache Parquet: http://parquet.apache.org/ : カラム型データをHadoop内部に持つことができるデータベース (参考: http://www.publickey1.jp/blog/13/hadoopparquettwitter.html )
+[1] Apache Parquet: [http://parquet.apache.org/](http://parquet.apache.org/) : カラム型データをHadoop内部に持つことができるデータベース (参考: [http://www.publickey1.jp/blog/13/hadoopparquettwitter.html](http://www.publickey1.jp/blog/13/hadoopparquettwitter.html) )
