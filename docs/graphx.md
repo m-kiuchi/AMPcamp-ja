@@ -500,7 +500,7 @@ scala> graph.triplets.take(5).foreach(println(_))
 先ほど言った通り、データセット内のトリプレットは”Berkeley”の文字が接続元か接続先の記事タイトルに現れます。
 
 
-## 5-4-(5). ページランクをウィキペディアで行う
+### 5-4-(5). ページランクをウィキペディアで行う
 次にグラフ分析を開始できます。この例では[ページランク](http://en.wikipedia.org/wiki/PageRank)を使ってウィキペディアグラフ内の最も重要なページを評価します。
 [ページランク](http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.graphx.lib.PageRank$)は小さいながらも成長の続いている、GraphXにすでに実装された一般的なグラフアルゴリズムの一部です。
 実行方法は単純で複雑ではありません。
