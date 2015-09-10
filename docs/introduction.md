@@ -21,8 +21,10 @@ Linuxマシン：以下の要件を満たしていること
 ```
 # yum -y update
 # yum -y install wget unzip
+
 最新のJDKパッケージをアップロード
 # yum --nogpgcheck localinstall jdk-8u60-linux-x64.rpm
+
 rootから一般ユーザに変更
 $ wget http://ftp.riken.jp/net/apache/spark/spark-1.4.1/spark-1.4.1.tgz
 $ tar xzvf spark-1.4.1.tgz
@@ -37,6 +39,7 @@ $ cd ${HOME}/spark-1.4.1/conf
 $ cp log4j.properties.template log4j.properties
 $ vi log4j.properties
 clog4j.rootCategory=WARN, console
+
 トレーニング用のデータを用意します
 $ cd ${HOME}
 $ mkdir training
@@ -45,6 +48,7 @@ $ wget http://d12yw77jruda6f.cloudfront.net/ampcamp5-usb.zip
 $ unzip ampcamp5-usb.zip
 $ wget https://databricks-training.s3.amazonaws.com/training-downloads.zip
 $ unzip training-downloads.zip
+
 *SparkRを使う場合はこちらのURLが必要です
 $ wget http://d12yw77jruda6f.cloudfront.net/training-downloads.zip 
 $ unzip training-downloads.zip
