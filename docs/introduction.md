@@ -4,7 +4,7 @@
 本文書は、[Spark Summit 2014 Training hands-on exercises](https://databricks-training.s3.amazonaws.com/index.html), および[AMP Camp 5 - big data bootcamp](http://ampcamp.berkeley.edu/5/)を元に簡易に手順を記述し、自習者がApache Sparkをより簡便に理解する手助けをするための文章です。
 元のドキュメントから現行バージョン(1.4.1)に合わせて少し記述を変更している部分があります。本文書は、JDK 8 Update 45(Oracle公式版)、Spark 1.4.1 (2015/8/24時点の最新版)を前提に記述されています。
 
-# 1-1. 用意するもの
+## 1-1. 用意するもの
 
 
 Linuxマシン：以下の要件を満たしていること
@@ -54,7 +54,7 @@ $ wget http://d12yw77jruda6f.cloudfront.net/training-downloads.zip
 $ unzip training-downloads.zip
 ```
 
-# 1-2. トレーニングの概要
+## 1-2. トレーニングの概要
 Sparkの機能についてトレーニングを行います。それぞれの機能を使用するにあたって、以下の言語の知識を必要とします。
 
 |                           |Scala     |Java      |Python     |
