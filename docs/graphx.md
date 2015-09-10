@@ -49,7 +49,7 @@ scala> import org.apache.spark.rdd.RDD
 import org.apache.spark.rdd.RDD
 ```
 <a id="5-2-1"></a>
-### 5-2-(1). プロパティグラフ（特性グラフ）の作成
+### <font color="black">5-2-(1). プロパティグラフ（特性グラフ）の作成</font>
 [プロパティグラフ](http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.graphx.Graph)は各辺と頂点にユーザが定義した特性を持つ有向多重グラフです。
 有向グラフの場合は辺に方向が付いているので接続元（source)と接続先(destination)で特定されます。
 多重グラフとは同じ接続元から接続先に多重の並列な辺がある可能性を示しています。
@@ -98,7 +98,7 @@ RDDのほかに生ファイル、RDD、人工ジェネレータからもプロ�
 グラフの型や値を変更したいときは元のグラフに欲しい変化を付け加え新しいグラフを作成できます。影響なしの構造、特徴、指数に相当する部分は新しいグラフにも引き継がれます。
 また、各グラフの分割りはRDDのように故障時には違うマシーンで再構築できます。
 
-### 5-2-(2). グラフを見る
+### <font color="black">5-2-(2). グラフを見る</font>
 殆どの要件では計算処理の結果を集合やセーブする際に頂点と辺のRDD内覧を展開する処理を行います。
 そのためグラフのクラスは頂点と辺の特性にアクセスする為にgraph.verticesとgraph.edgesのメンバーを含んでいます。
 このメンバーはRDD[(VertexId, V)]とRDD[Edge[E]]の拡張型であり、GraphX内部のグラフデータ描写を利用して最適化された描写にバックアップされています。
@@ -280,7 +280,7 @@ David
 Bob
 ```
 
-### 5-3-(1). MapReduceTripletというオペレータ
+### <font color="black">5-3-(1). MapReduceTripletというオペレータ</font>
 [5-2-(1)](#5-2-1)で作成したプロパティグラフを使って一番年上のフォローワーを探したいとします。
 この作業はmapReduceTripletオペレータが可能にしてくれます。
 このオペレータはGraphXで徹底的に最適化されたコアとなる集約機能です。
@@ -345,7 +345,7 @@ Ed does not have any followers.
 The average age of Bob's followers is 60.0.
 ```
 
-### 5-3-(2). サブグラフ
+### <font color="black">5-3-(2). サブグラフ</font>
 30歳以上のユーザからなるコミュニティを詳しく調べたいという状況になったとします。
 この様な分析を行うためにGraphXのサブグラフというオペレータを使います。
 サブグラフとは全体のグラフの一部を切り取り作成したグラフです。
@@ -407,7 +407,7 @@ usb/$ echo -e "SPARK_JAVA_OPTS+=' -Dspark.serializer=org.apache.spark.serializer
 シリアライザプロパティがorg.apache.spark.serializer.KyroSerializerに設定されているはずです。
 
 
-### 5-4-(1). 再起動
+### <font color="black">5-4-(1). 再起動</font>
 Sparkシェルを起動し、パッケージをインポートしてください。
 
 ```
@@ -418,7 +418,7 @@ import org.apache.spark.graphx._
 import org.apache.spark.rdd.RDD
 ```
 
-### 5-4-(2). ウィキペディア記事の読み込み
+### <font color="black">5-4-(2). ウィキペディア記事の読み込み</font>
 ウィキペディアは百科事典すべての記事を[XML状の塊](http://en.wikipedia.org/wiki/Wikipedia:Database_download#English-language_Wikipedia)として提供しています。
 最新のものは44GBありますので、前処理とフィルターを（もちろんSparkとGraphXを使って）行ってUSBドライブに収まりきる程度にしておきました。
 このトレーニングでは”Berkeley”の入った記事とその記事からリンクされている・している記事を切り取ってあります。
@@ -436,14 +436,14 @@ scala> val links: RDD[String] = sc.textFile("data/graphx/graphx-wiki-edges.txt")
 //links: org.apache.spark.rdd.RDD[String] = data/graphx/graphx-wiki-edges.txt MappedRDD[3] at textFile at <console>:16
 ```
 
-### 5-4-(3). 最初の記事を見る
+### <font color="black">5-4-(3). 最初の記事を見る</font>
 
 ```
 articles.first
 // res1: String = 6598434222544540151      Adelaide Hanscom Leeson
 ```
 
-### 5-4-(4). グラフを作成する
+### <font color="black">5-4-(4). グラフを作成する</font>
 さあ、記事とリンクを使ってバークレー大学に関わる記事のグラフを作りましょう。
 
 まずは記事の列を頂点IDとタイトルのペアに分解します。
@@ -500,7 +500,7 @@ scala> graph.triplets.take(5).foreach(println(_))
 先ほど言った通り、データセット内のトリプレットは”Berkeley”の文字が接続元か接続先の記事タイトルに現れます。
 
 
-### 5-4-(5). ページランクをウィキペディアで行う
+### <font color="black">5-4-(5). ページランクをウィキペディアで行う</font>
 次にグラフ分析を開始できます。この例では[ページランク](http://en.wikipedia.org/wiki/PageRank)を使ってウィキペディアグラフ内の最も重要なページを評価します。
 [ページランク](http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.graphx.lib.PageRank$)は小さいながらも成長の続いている、GraphXにすでに実装された一般的なグラフアルゴリズムの一部です。
 実行方法は単純で複雑ではありません。
