@@ -149,7 +149,7 @@ ssc.awaitTermination()
 ```
 
 これでプログラムができました。
-改めてプログラム全体を再掲します。緑字部分がもともとのテンプレートから変化した部分です。
+改めてプログラム全体を再掲します。
 
 `training/streaming/scala/Tutorial.scala`
 
@@ -189,7 +189,8 @@ object Tutorial {
 # 3-4. サンプルアプリケーションのコンパイル・実行
 さて、作成したプログラムを実行してみます。
 
-SBTのプロジェクトファイルを修正(赤字部分)します。
+SBTのプロジェクトファイルを修正します。
+Scalaのバージョンとライブラリを設定します。
 
 `training/streaming/scala/build.sbt`
 
@@ -330,7 +331,8 @@ $
 
 以下でDStreamオブジェクトにどのような変更を加えるかを記述しています。また[3-3.](#3-3)で述べた通り、全ての変更は”ssc.start()”メソッドの実行前に記述されている必要があります。
 
-まず改修済みのコード全文を掲載します。緑字部分が前回からの改修部分です。
+処理用のプログラムを改修します。
+改修済みのコード全文を掲載します。
 
 `training/streaming/scala/Tutorial.scala`
 
@@ -381,7 +383,7 @@ tweets DStreamオブジェクトストリームはTwitterUtils.createStreamメ�
 ![](./images/image14.png)
 
 以下は”tweets.print()”で得られるtweets DStreamオブジェクトストリームの抜粋で、１つのTwitter4J.Statusオブジェクト＝１つのツイートのデータになります。
-緑字部分が実際のユーザのツイートです。
+text=''内に書かれているのが実際のユーザのツイートです。
 
 ```
 StatusJSONImpl{createdAt=Fri Jun 19 18:01:48 JST 2015, id=611821169948266496, text='BBC News - Hong Kong lawmakers reject Beijing poll plan http://t.co/JLKtx3jltA', source='<a href="http://twitter.com/download/iphone" rel="nofollow">Twitter for iPhone</a>', isTruncated=false, inReplyToStatusId=-1, inReplyToUserId=-1, isFavorited=false, inReplyToScreenName='null', geoLocation=null, place=null, retweetCount=0, isPossiblySensitive=false, contributorsIDs=[J@72342301, retweetedStatus=null, userMentionEntities=[], urlEntities=[URLEntityJSONImpl{url='http://t.co/JLKtx3jltA', expandedURL='http://www.bbc.com/news/world-asia-33179247', displayURL='bbc.com/news/world-asi…'}], hashtagEntities=[], mediaEntities=[], currentUserRetweetId=-1, user=UserJSONImpl{id=2982028466, name='sunny', screenName='Iampju93Sunny', location='', description='null', isContributorsEnabled=false, profileImageUrl='http://pbs.twimg.com/profile_images/555345662884061184/PImnxNip_normal.jpeg', profileImageUrlHttps='https://pbs.twimg.com/profile_images/555345662884061184/PImnxNip_normal.jpeg', url='null', isProtected=false, followersCount=210, status=null, profileBackgroundColor='C0DEED', profileTextColor='333333', profileLinkColor='0084B4', profileSidebarFillColor='DDEEF6', profileSidebarBorderColor='C0DEED', profileUseBackgroundImage=true, showAllInlineMedia=false, friendsCount=617, createdAt=Wed Jan 14 16:53:38 JST 2015, favouritesCount=0, utcOffset=-1, timeZone='null', profileBackgroundImageUrl='http://abs.twimg.com/images/themes/theme1/bg.png', profileBackgroundImageUrlHttps='https://abs.twimg.com/images/themes/theme1/bg.png', profileBackgroundTiled=false, lang='ko', statusesCount=400, isGeoEnabled=false, isVerified=false, translator=false, listedCount=1, isFollowRequestSent=false}}
@@ -390,7 +392,7 @@ StatusJSONImpl{createdAt=Fri Jun 19 18:01:48 JST 2015, id=611821169948266496, te
 `val statuses = tweets.map(status => status.getText())`
 
 この命令(map(getText()))で、tweets DStream内の個々のRDDに含まれるデータ(Twitter4J.Statusオブジェクトの配列の個々の要素)が変数statusにマップされ、getText()メソッドがコールされます。
-結果のツイート本文(上記緑字部分、String型)は配列となり、元のRRDオブジェクトに格納されます。
+結果のツイート本文(String型)は配列となり、元のRRDオブジェクトに格納されます。
 
 ![](./images/image18.png)
 
@@ -521,7 +523,7 @@ $
 また、Sparkの[Transform命令](https://spark.apache.org/docs/latest/programming-guide.html#transformations)は遅延評価(Lazy Evaluation)によって即時には実行されません。
 [Action命令](https://spark.apache.org/docs/latest/programming-guide.html#actions)が実行された時に実際に処理が開始されます。
 
-上記サンプルでTransform命令を青字、Action命令を赤字で色分けすると、以下の要になります。
+上記サンプルでTransform命令は`.map(...)` `.flatMap(...)` `.filter(...)` `.reduceByKeyAndWindow(...)` `.sortByKey(...)`、Action命令は`.transform(...)` `.foreach(...)` `.take(...)`の部分です。
 つまり実際にはそれぞれの入力RDDに大して、28行目のtransform、29行目のforeachでそれぞれジョブが実行されることになります。
 
 `training/streaming/scala/Tutorial.scala`
