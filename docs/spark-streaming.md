@@ -579,9 +579,9 @@ Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視
 
 参考:
 
-- Twitterがfirehose契約を解消したNTTデータを戦略的ソリューションパートナーに http://jp.techcrunch.com/2015/04/15/20150415twitter-set-to-strike-ibm-style-analytics-deal-with-ntt-data/ 
-- 日本でのデータ再販について https://blog.twitter.com/ja/2015/0415gnip 
-- New Tweets per second record, and how!(2013)2013年の時点では、firehoseデータストリームは平均約6,000tweets per second(TPS)であることがわかります。https://blog.twitter.com/2013/new-tweets-per-second-record-and-how 
+- Twitterがfirehose契約を解消したNTTデータを戦略的ソリューションパートナーに [http://jp.techcrunch.com/2015/04/15/20150415twitter-set-to-strike-ibm-style-analytics-deal-with-ntt-data/](http://jp.techcrunch.com/2015/04/15/20150415twitter-set-to-strike-ibm-style-analytics-deal-with-ntt-data/) 
+- 日本でのデータ再販について [https://blog.twitter.com/ja/2015/0415gnip](https://blog.twitter.com/ja/2015/0415gnip) 
+- New Tweets per second record, and how!(2013)2013年の時点では、firehoseデータストリームは平均約6,000tweets per second(TPS)であることがわかります。[https://blog.twitter.com/2013/new-tweets-per-second-record-and-how](https://blog.twitter.com/2013/new-tweets-per-second-record-and-how) 
 
 ----------------------------------------------
 <a id="[2]"></a>
