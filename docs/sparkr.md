@@ -243,7 +243,7 @@ Top10のユーザーを切り出す。
 大ヒント：　filterを使うといいでしょう。
 
 黒文字に変えますと答えが見れます。
-`> caliArticles <- Filter(function(x) { grepl(“California”, x$text) }, parsedRDD)`
+<font color="white">"`> caliArticles <- Filter(function(x) { grepl(“California”, x$text) }, parsedRDD)`test</font>
 
 8.RDD APIで使用できる全ての操作はhelp(package=SparkR)で参照できます。
 
