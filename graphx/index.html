@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+	<title>5. GraphX - AMPcamp-ja</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">AMPcamp-ja</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">目次</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../introduction/">1. はじめに</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../spark-sql/">2. Spark SQL</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../spark-streaming/">3. Sparkストリーミング</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../mllib/">4. MLlib(機械学習)</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">5. GraphX</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../sparkr/">6. SparkR</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../pipeline/">7. パイプラインを使ってイメージ解析</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../mllib/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../sparkr/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="http://github.com/m-kiuchi/AMPcamp-ja">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#5-graphx">5. GraphX</a></li>
+        
+            <li><a href="#5-1-graphx">5-1. GraphXのグラフ並列処理の背景</a></li>
+        
+            <li><a href="#5-2-graphx-api">5-2. GraphX APIの紹介</a></li>
+        
+            <li><a href="#5-3">5-3. グラフオペレータ（操作）</a></li>
+        
+            <li><a href="#5-4">5-4. リアルデータ上の端末間のグラフ分析パイプラインを作成</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="5-graphx">5. GraphX</h1>
+<p>GraphXとは（ウェブグラフやソーシャルネットワークなどの）グラフ作りと（ページランクや協調フィルタリングなどの）グラフ並列計算処理のための新しいAPIです。
+GraphXはSparkの基本抽象概念であるRDD（耐久的分散データセット）を拡張した耐久的分散プロパティグラフのことです。
+耐久的分散プロパティグラフは辺と頂点に特性が付いた有向多重グラフです。
+GraphXはグラフ並列計算として重要な操作である<a href="http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.graphx.Graph">サブグラフ作り、頂点併合、近接集約など</a>をサポートします。
+その他にも最適化された<a href="http://spark.apache.org/docs/latest/graphx-programming-guide.html#pregel">PregelAPI</a>に相似した物もサポートし、増え続けている<a href="http://spark.apache.org/docs/latest/graphx-programming-guide.html#graph_algorithms">グラフアルゴリズム</a>やグラフ分析を簡潔にする<a href="http://spark.apache.org/docs/latest/graphx-programming-guide.html#graph_builders">ビルダー</a>を含んでいます。</p>
+<p>この章では、GraphXを使ってウィキぺディアのデータを分析するグラフアルゴリズムをSpark内で実行します。GraphXのAPIは現状ではScalaでしか動きませんが、将来的にJavaとPythonの言語サポートも提供する予定です。</p>
+<h2 id="5-1-graphx">5-1. GraphXのグラフ並列処理の背景</h2>
+<p>もし今すぐコードの記述を実行したい方たちはこの部分は飛ばしてもらって結構です。</p>
+<p>ソーシャルネットワークや言語モデリングなどからグラフデータの重要性と規模が広がっています。
+その陰で<a href="http://giraph.apache.org/">Giraph</a>や<a href="https://dato.com/products/create/open_source.html">GraphLab</a>などの ”グラフ並列計算処理システム(Graph-Parallel Systems)” の開発が進んでいます(それに対してHadoopやSparkは “データ並列計算処理システム(Data-Parallel Systems)”と呼びます)。
+グラフ並列計算処理システムは計算処理する型を制限したり新しい方法でデータを分割したり分散処理することで、従来のデータ並列計算フレームワークで効率的な処理を行うことが難しかったグラフアルゴリズムを効率的に実行できます。</p>
+<p><img alt="image25" src="../images/image25.png" /></p>
+<p>これらグラフ並列計算処理システムが行う制約は、グラフ並列計算のパフォーマンスを明確に向上させますが、典型的なグラフ分析ワークフローを表現するのが難しくなります。
+加えてグラフ並列計算処理システムはページランクなどの反復的なアルゴリズムに最適化される一方で、グラフの構築や構造変形などの基本的なタスクや、複数のグラフにまたがる処理には適していません。</p>
+<p>これらの仕組みは結果的にグラフトポロジ外へのデータ変換を必要とし、その変換先はMapReduceのようなデータ並列処理システムとなります。
+データの扱い方は課題次第で、分析中の未整理のデータは複数のテーブルやグラフの見方が必要とされ、各テーブルやグラフの特性を有効にするために効率的で簡潔的なデータ変換が求められます。</p>
+<p><img alt="image12" src="../images/image12.png" /></p>
+<p>加えてそれぞれの段階でデータアナリストにとっては、グラフ型の表現とテーブル型の表現は必要に応じて効率的に切り替えることが必要となります。
+しかしながら既存の”グラフ並列計算処理システム”や”データ並列計算処理システム”によって構成される分析パイプラインは、この分析ワークフローを実現するために非常に重い計算や、それぞれにおいて異なる複雑なプログラムを書くことをデータアナリストに強いています。</p>
+<p><img alt="image07" src="../images/image07.png" /></p>
+<p>GraphXはこれら既存の”グラフ並列計算処理システム”や”データ並列計算処理システム”を統合し、単一のAPIセットにすることを目指しています。
+GraphX APIよって、ユーザはRDD上のデータに変更を加えることなく、グラフ形式として操作するかテーブル形式として操作するかを自由に選択し処理を行うことが出きるようになります。</p>
+<h2 id="5-2-graphx-api">5-2. GraphX APIの紹介</h2>
+<p>まずは、GraphXの構造から学んでいきましょう。はじめにSparkのシェルを開きます。</p>
+<pre><code>training/ $ spark/bin/spark-shell
+scala&gt;
+</code></pre>
+
+<p>次に、GraphXとRDDをインポートします。</p>
+<pre><code>scala&gt; import org.apache.spark.graphx._
+import org.apache.spark.graphx._
+scala&gt; import org.apache.spark.rdd.RDD
+import org.apache.spark.rdd.RDD
+</code></pre>
+
+<p><a id="5-2-1"></a></p>
+<h3 id="5-2-1"><font color="black">5-2-(1). プロパティグラフ（特性グラフ）の作成</font></h3>
+<p><a href="http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.graphx.Graph">プロパティグラフ</a>は各辺と頂点にユーザが定義した特性を持つ有向多重グラフです。
+有向グラフの場合は辺に方向が付いているので接続元（source)と接続先(destination)で特定されます。
+多重グラフとは同じ接続元から接続先に多重の並列な辺がある可能性を示しています。
+各頂点はVertexIdという64ビット整数(64-bit long)のIDで特定されます。
+それぞれの頂点と辺はプロパティと呼び、ScalaかJavaオブジェクトとして保持されます。</p>
+<p>トレーニング前半を通して、以下のようなソーシャル友人関係を表すプロパティグラフを使っていきます。ビッグデータを学ぶ玩具のようですが、グラフデータのモデルとGraphXを学ぶのに適しています。以下のデータにおける頂点はユーザ名と年齢が含まれ、辺はベクトルとなります。</p>
+<p><img alt="image09" src="../images/image09.png" /></p>
+<p>まずプロパティグラフを頂点と辺の配列から作成します。後に実際のデータの読み込みをデモします。</p>
+<p>まず以下のコマンドをspark-shellで実行します。</p>
+<pre><code>scala&gt; val vertexArray = Array( (1L, (&quot;Alice&quot;, 28)), (2L, (&quot;Bob&quot;, 27)), (3L, (&quot;Charlie&quot;, 65)), (4L, (&quot;David&quot;, 42)), (5L, (&quot;Ed&quot;, 55)), (6L, (&quot;Fran&quot;, 50)) )
+vertexArray: Array[(Long, (String, Int))] = Array((1,(Alice,28)), (2,(Bob,27)), (3,(Charlie,65)), (4,(David,42)), (5,(Ed,55)), (6,(Fran,50)))
+
+scala&gt; val edgeArray = Array( Edge(2L, 1L, 7), Edge(2L, 4L, 2), Edge(3L, 2L, 4), Edge(3L, 6L, 3), Edge(4L, 1L, 1), Edge(5L, 2L, 2), Edge(5L, 3L, 8), Edge(5L, 6L, 3) )
+edgeArray: Array[org.apache.spark.graphx.Edge[Int]] = Array(Edge(2,1,7), Edge(2,4,2), Edge(3,2,4), Edge(3,6,3), Edge(4,1,1), Edge(5,2,2), Edge(5,3,8), Edge(5,6,3))
+</code></pre>
+
+<p>辺（Edge)クラスは接続元と接続先の頂点（Vertex)を要素として持ち、さらにもう一つ整数の要素を持ちます。頂点の配列クラスはId、名前、年齢を要素として持っています。</p>
+<p>Sparkチュートリアルで習ったsc.parallelizeを使ってvertexArrayおよびedgeArray配列変数をRDDに置き換えます。</p>
+<pre><code>scala&gt; val vertexRDD: RDD[(Long, (String, Int))] = sc.parallelize(vertexArray)
+vertexRDD: org.apache.spark.rdd.RDD[(Long, (String, Int))] = ParallelCollectionRDD[0] at parallelize at &lt;console&gt;:27
+
+scala&gt; val edgeRDD: RDD[Edge[Int]] = sc.parallelize(edgeArray)
+edgeRDD: org.apache.spark.rdd.RDD[org.apache.spark.graphx.Edge[Int]] = ParallelCollectionRDD[1] at parallelize at &lt;console&gt;:27
+</code></pre>
+
+<p>これで、グラフを作る準備ができました。プロパティグラフのコンストラクターは頂点RDDと辺RDDを読み込み、グラフ[V,　E]を作成します。頂点RDDの形はRDD[(VertexId, V)]で辺RDDの形はRDD[Edge[E]]です。</p>
+<pre><code>scala&gt; val graph: Graph[(String, Int), Int] = Graph(vertexRDD, edgeRDD)
+graph: org.apache.spark.graphx.Graph[(String, Int),Int] = org.apache.spark.graphx.impl.GraphImpl@431ed0d5
+</code></pre>
+
+<p>このソーシャルネットワークのグラフ内にある頂点の特徴はタプル型の変数(名前(String型), 年齢(Int型))で、辺の特徴は”いいね！”(Int型)です。</p>
+<p>RDDのほかに生ファイル、RDD、人工ジェネレータからもプロパティグラフを作成できます。
+プロパティグラフはRDDのように不変で分散され欠陥保障されています。
+グラフの型や値を変更したいときは元のグラフに欲しい変化を付け加え新しいグラフを作成できます。影響なしの構造、特徴、指数に相当する部分は新しいグラフにも引き継がれます。
+また、各グラフの分割りはRDDのように故障時には違うマシーンで再構築できます。</p>
+<h3 id="5-2-2"><font color="black">5-2-(2). グラフを見る</font></h3>
+<p>殆どの要件では計算処理の結果を集合やセーブする際に頂点と辺のRDD内覧を展開する処理を行います。
+そのためグラフのクラスは頂点と辺の特性にアクセスする為にgraph.verticesとgraph.edgesのメンバーを含んでいます。
+このメンバーはRDD[(VertexId, V)]とRDD[Edge[E]]の拡張型であり、GraphX内部のグラフデータ描写を利用して最適化された描写にバックアップされています。</p>
+<p>graph.verticesを使って30歳以上のユーザーを見てみる。（命令の仕方は2通りあり、出力は以下です）</p>
+<pre><code>scala&gt; graph.vertices.filter { case (id, (name, age)) =&gt; age &gt; 30 }.collect.foreach { case (id, (name, age)) =&gt; println(s&quot;$name is $age&quot;) }
+David is 42
+Fran is 50
+Charlie is 65
+Ed is 55
+
+//caseを使わない場合
+scala&gt; graph.vertices.filter(v =&gt; v._2._2 &gt; 30).collect.foreach(v =&gt; println(s&quot;${v._2._1} is ${v._2._2}&quot;) )
+//上と同じ
+</code></pre>
+
+<p>辺と頂点の特性に加えて、プロパティグラフはトリプレット（三つ子）と呼ばれている特性の内覧も含んでいます。
+トリプレット内覧は頂点と辺の特性を統合させEdgeTripletクラスの実現値を含むRDD[EdgeTriplet[VD, ED]]を与えます。
+EdgeTripletクラスはEdgeクラスを接続元（srcAttr）と接続先（dstAttr）を加えて拡張した形です。
+以下が絵で表したものです。</p>
+<p><img alt="image10" src="../images/image10.png" /></p>
+<p>graph.tripletsを使って誰がどのユーザーにいいね！を与えたかを見てみる。（2通りある）</p>
+<pre><code>scala&gt; for (triplet &lt;- graph.triplets.collect) { println(s&quot;${triplet.srcAttr._1} likes ${triplet.dstAttr._1}&quot;) }
+Bob likes Alice
+Bob likes David
+Charlie likes Bob
+Charlie likes Fran
+David likes Alice
+Ed likes Bob
+Ed likes Charlie
+Ed likes Fran
+
+//forを使わない場合
+scala&gt; graph.triplets.collect.foreach(triplet =&gt; println(s&quot;${triplet.srcAttr._1} likes ${triplet.dstAttr._1}&quot;) )　
+//上と同じ
+</code></pre>
+
+<p>いいね！を5回以上与えたユーザーを見てみる。</p>
+<pre><code>scala&gt; graph.triplets.filter(t =&gt; t.attr &gt; 5).collect.foreach(triplet =&gt; println(s&quot;${triplet.srcAttr._1} loves ${triplet.dstAttr._1}&quot;) )
+Bob loves Alice
+Ed loves Charlie
+</code></pre>
+
+<h2 id="5-3">5-3. グラフオペレータ（操作）</h2>
+<p>一般のRDDは基礎操作としてcount, map, filter, reduceByKeyなどがあるように、プロパティグラフも基礎操作のコレクションがあります。
+以下はGraph　APIで使われている一部の関数の例です。</p>
+<pre><code>/** プロパティグラフの機能性のまとめ*/
+class Graph[VD, ED] {
+  // グラフの情報
+  val numEdges: Long
+  val numVertices: Long
+  val inDegrees: VertexRDD[Int]
+  val outDegrees: VertexRDD[Int]
+  val degrees: VertexRDD[Int]
+
+  // グラフをコレクションとして内覧
+  val vertices: VertexRDD[VD]
+  val edges: EdgeRDD[ED]
+  val triplets: RDD[EdgeTriplet[VD, ED]]
+
+  // 分割り過程を変える
+  def partitionBy(partitionStrategy: PartitionStrategy): Graph[VD, ED]
+
+  // 頂点と辺の特徴を変換する
+  def mapVertices[VD2](map: (VertexID, VD) =&gt; VD2): Graph[VD2, ED]
+  def mapEdges[ED2](map: Edge[ED] =&gt; ED2): Graph[VD, ED2]
+  def mapEdges[ED2](map: (PartitionID, Iterator[Edge[ED]]) =&gt; Iterator[ED2]): Graph[VD, ED2]
+  def mapTriplets[ED2](map: EdgeTriplet[VD, ED] =&gt; ED2): Graph[VD, ED2]
+
+  // グラフ構造を変更する
+  def reverse: Graph[VD, ED]
+  def subgraph(
+      epred: EdgeTriplet[VD,ED] =&gt; Boolean = (x =&gt; true),
+      vpred: (VertexID, VD) =&gt; Boolean = ((v, d) =&gt; true))
+    : Graph[VD, ED]
+  def groupEdges(merge: (ED, ED) =&gt; ED): Graph[VD, ED]
+
+  // RDDをグラフと統合する
+  def joinVertices[U](table: RDD[(VertexID, U)])(mapFunc: (VertexID, VD, U) =&gt; VD): Graph[VD, ED]
+  def outerJoinVertices[U, VD2](other: RDD[(VertexID, U)])
+      (mapFunc: (VertexID, VD, Option[U]) =&gt; VD2)
+    : Graph[VD2, ED]
+
+  // 隣のトリプレットの情報を集合する
+  def collectNeighbors(edgeDirection: EdgeDirection): VertexRDD[Array[(VertexID, VD)]]
+  def mapReduceTriplets[A: ClassTag](
+      mapFunc: EdgeTriplet[VD, ED] =&gt; Iterator[(VertexID, A)],
+      reduceFunc: (A, A) =&gt; A)
+    : VertexRDD[A]
+
+  //　反復的グラフ並列計算
+  def pregel[A](initialMsg: A, maxIterations: Int, activeDirection: EdgeDirection)(
+      vprog: (VertexID, VD, A) =&gt; VD,
+      sendMsg: EdgeTriplet[VD, ED] =&gt; Iterator[(VertexID,A)],
+      mergeMsg: (A, A) =&gt; A)
+    : Graph[VD, ED]
+
+  // 基本グラフアルゴリズム
+  def pageRank(tol: Double, resetProb: Double = 0.15): Graph[Double, Double]
+  def connectedComponents(): Graph[VertexID, ED]
+  def triangleCount(): Graph[Int, ED]
+  def stronglyConnectedComponents(numIter: Int): Graph[VertexID, ED]
+}
+</code></pre>
+
+<p>これらの関数はGraphとGraphOpsに分かれています。しかし、Scalaの暗黙の機能によってGraphOpsの操作は自動的にGraphのメンバーをとして利用できます。</p>
+<p>例として、各頂点に入っていくる辺（入次数）を以下のように計算しましょう。
+実行例でたとえると誰が誰にいいね！を貰ったかを計算してみましょう。</p>
+<p><code>val inDegrees: VertexRDD[Int] = graph.inDegrees</code></p>
+<p>上の例ではgraph.inDegreesオペレータがVertexRDD[Int]を返します（これはRDD[(VertexId, Int)]として動くことを覚えてください）。
+ここで入次数と出次数を各頂点に頂点特徴として合体したいと思います。この作業は一般的なグラフオペレータをセットで使います。</p>
+<p>はじめに、加える特性（inDegとoutDeg)を整列するために新しいクラスを作ります。
+そして、このユーザ特徴を使って新しいグラフを作ります。</p>
+<pre><code>クラスを定義してユーザ特徴をもっと明確に形成します。
+scala&gt; case class User(name: String, age: Int, inDeg: Int, outDeg: Int)
+defined class User
+
+ユーザグラフを作成します。
+scala&gt; val initialUserGraph: Graph[User, Int] = graph.mapVertices{ case(id, (name, age)) =&gt; User(name, age, 0, 0) }
+initialUserGraph: org.apache.spark.graphx.Graph[User,Int] = org.apache.spark.graphx.impl.GraphImpl@2fb38a1a
+</code></pre>
+
+<p>新しいグラフを作った際は各頂点の入次数と出次数の初期設定を0に定義しました。
+そこで、この情報をグラフに読み込み新しい頂点特性を構築しました。</p>
+<pre><code>入次数と出次数の情報を埋め込みます。
+scala&gt; val userGraph = initialUserGraph.outerJoinVertices(initialUserGraph.inDegrees) { case (id, u, inDegOpt) =&gt; User(u.name, u.age, inDegOpt.getOrElse(0), u.outDeg) }.outerJoinVertices(initialUserGraph.outDegrees) { case (id, u, outDegOpt) =&gt; User(u.name, u.age, u.inDeg, outDegOpt.getOrElse(0)) }
+userGraph: org.apache.spark.graphx.Graph[User,Int] = org.apache.spark.graphx.impl.GraphImpl@1a9fea8
+</code></pre>
+
+<p>ここではouterJoinVerticesというグラフのメソッド使いました。
+このメソッドは以下のような（混乱しそうな）シグネチャタイプです。</p>
+<pre><code>def outerJoinVertices[U, VD2](other: RDD[(VertexID, U)])
+      (mapFunc: (VertexID, VD, Option[U]) =&gt; VD2)
+    : Graph[VD2, ED]
+</code></pre>
+
+<p>お気づきかもしれませんがouterJoinVerticesは二つの引数があります。
+一つ目が頂点値のRDDで、二つ目のリスト引数がRDDのid, attribute, Optionalで合わせる値からの関数を受けて新しい頂点値に流します。
+入力RDDが多少グラフの頂点の値を含んでいない可能性があります。
+その場合はOption引数が空でoptOutDeg.getOrElse(0)が0を返します。</p>
+<p>新しくできたuserGraphを使って、どのユーザーが何人からいいね！を貰ったかを見てみます。</p>
+<pre><code>scala&gt; for ((id, property) &lt;- userGraph.vertices.collect) { println(s&quot;User $id is called ${property.name} and is liked by ${property.inDeg} people.&quot;) }
+User 4 is called David and is liked by 1 people.
+User 1 is called Alice and is liked by 2 people.
+User 6 is called Fran and is liked by 2 people.
+User 3 is called Charlie and is liked by 1 people.
+User 5 is called Ed and is liked by 0 people.
+User 2 is called Bob and is liked by 2 people.
+</code></pre>
+
+<p>最後にいいねを与えた人数と貰った人数が同じユーザーを見てみます。</p>
+<pre><code>scala&gt; userGraph.vertices.filter { case (id, u) =&gt; u.inDeg == u.outDeg }.collect.foreach { case (id, property) =&gt; println(property.name) }
+David
+Bob
+</code></pre>
+
+<h3 id="5-3-1-mapreducetriplet"><font color="black">5-3-(1). MapReduceTripletというオペレータ</font></h3>
+<p><a href="#5-2-1">5-2-(1)</a>で作成したプロパティグラフを使って一番年上のフォローワーを探したいとします。
+この作業はmapReduceTripletオペレータが可能にしてくれます。
+このオペレータはGraphXで徹底的に最適化されたコアとなる集約機能です。</p>
+<p>ページランクなどグラフアルゴリズムは近接頂点のプロパティを反復的に集約するので、近接集合はグラフ計算で最も重要です。</p>
+<p>この操作の単純化したシグネチャは以下のようになります。</p>
+<pre><code>class Graph[VD, ED] {
+  def mapReduceTriplets[MsgType](
+      // エッジトリプレットからメッセージのコレクションへの関数 (すなわち Map)
+      map: EdgeTriplet[VD, ED] =&gt; Iterator[(VertexId, MsgType)],
+      // メッセージを同じ頂点に結合する関数 (すなわち Reduce)
+      reduce: (MsgType, MsgType) =&gt; MsgType)
+    : VertexRDD[MsgType]
+}
+</code></pre>
+
+<p>map関数は各エッジトリプレットに適用され繋いでいる頂点にメッセージを送ります。
+そして、reduce関数が送られてきたメッセージを各頂点ごとに集約します。
+この操作の結果は各頂点に集約されたメッセージを含むVertexRDDです。</p>
+<p>各ユーザの一番年上のフォロワーはそのフォロワーの名前と年齢を含んだメッセージを送り、一番年上のメッセージだけを集約することで調べることができます。</p>
+<p>各ユーザの一番年上のフォローワーを探す。</p>
+<pre><code>scala&gt; val oldestFollower: VertexRDD[(String, Int)] = userGraph.mapReduceTriplets[(String, Int)]( edge =&gt; Iterator((edge.dstId, (edge.srcAttr.name, edge.srcAttr.age))), (a, b) =&gt; if (a._2 &gt; b._2) a else b)
+各エッジから接続先の特性を載せたメッセージを接続先に送ります
+
+oldestFollower: org.apache.spark.graphx.VertexRDD[(String, Int)] = VertexRDDImpl[49] at RDD at VertexRDD.scala:57
+</code></pre>
+
+<p>各ユーザの一番年上のフォロワーを表示します。</p>
+<pre><code>scala&gt; userGraph.vertices.leftJoin(oldestFollower) { (id, user, optOldestFollower) =&gt; optOldestFollower match { case None =&gt; s&quot;${user.name} does not have any followers.&quot; case Some((name, age)) =&gt; s&quot;${name} is the oldest follower of ${user.name}.&quot; } }.collect.foreach { case (id, str) =&gt; println(str) }
+
+
+David is the oldest follower of Alice.
+Charlie is the oldest follower of Fran.
+Ed is the oldest follower of Charlie.
+Bob is the oldest follower of David.
+Ed does not have any followers.
+Charlie is the oldest follower of Bob.
+</code></pre>
+
+<p>各ユーザのフォロワーの平均年齢を計算します。</p>
+<pre><code>scala&gt; val averageAge: VertexRDD[Double] = userGraph.mapReduceTriplets[(Int, Double)]( edge =&gt; Iterator((edge.dstId, (1, edge.srcAttr.age.toDouble))), (a, b) =&gt; ((a._1 + b._1), (a._2 + b._2)) ).mapValues((id, p) =&gt; p._2 / p._1)
+averageAge: org.apache.spark.graphx.VertexRDD[Double] = VertexRDDImpl[57] at RDD at VertexRDD.scala:57
+
+scala&gt; userGraph.vertices.leftJoin(averageAge) { (id, user, optAverageAge) =&gt; optAverageAge match { case None =&gt; s&quot;${user.name} does not have any followers.&quot; case Some(avgAge) =&gt; s&quot;The average age of ${user.name}\'s followers is $avgAge.&quot; } }.collect.foreach { case (id, str) =&gt; println(str) }
+The average age of David's followers is 27.0.
+The average age of Alice's followers is 34.5.
+The average age of Fran's followers is 60.0.
+The average age of Charlie's followers is 55.0.
+Ed does not have any followers.
+The average age of Bob's followers is 60.0.
+</code></pre>
+
+<h3 id="5-3-2"><font color="black">5-3-(2). サブグラフ</font></h3>
+<p>30歳以上のユーザからなるコミュニティを詳しく調べたいという状況になったとします。
+この様な分析を行うためにGraphXのサブグラフというオペレータを使います。
+サブグラフとは全体のグラフの一部を切り取り作成したグラフです。
+頂点はユーザが記述した頂点性質を満たしている物のみ取り出します。
+辺も同じくユーザが記述した辺性質を満たしている物だけが返されて、繋いでいる頂点は記述が満たされている物だけを繋げます。</p>
+<p>ここからはsubgraphを使ってグラフを30歳以上のコミュニティに制限します。</p>
+<pre><code>scala&gt; val olderGraph = userGraph.subgraph(vpred = (id, user) =&gt; user.age &gt;= 30)
+olderGraph: org.apache.spark.graphx.Graph[User,Int] = org.apache.spark.graphx.impl.GraphImpl@68941ca4
+</code></pre>
+
+<p>この制限されたグラフ内のコミュニティを考察してみます。</p>
+<pre><code>scala&gt; olderGraph.vertices.leftJoin(cc.vertices) { case (id, user, comp) =&gt; s&quot;${user.name} is in component ${comp.get}&quot; }.collect.foreach{ case (id, str) =&gt; println(str) }
+David is in component 4
+Fran is in component 3
+Charlie is in component 3
+Ed is in component 3
+</code></pre>
+
+<p>繋がっているコンポーネントのそのコンポーネント内で一番低いVertexIdが標識に採用されています。
+サブグラフを調査してみますと、Davidが残りのコミュニティから切断されています。
+さらに、Davidは元のグラフでは若いユーザを通して繋がっていたと解ります。</p>
+<h2 id="5-4">5-4. リアルデータ上の端末間のグラフ分析パイプラインを作成</h2>
+<p>ここまででGraphX APIの個々のコンポーネントを学習しましたので、それらを共同してリアル分析パイプラインの構築をしてみましょう。
+ここからはウィキペディアのリンクデータからはじめ、GraphX操作を用いて構造を分析し、Sparkのオペレータでグラフ分析の出力を調べます。
+これらはすべてSparkシェルから行います。</p>
+<p>GraphXは最適な性能を得るためにKyroシリアライザを必要とします。
+今、どんなシリアライザを使っているかを調べるためにhttp://localhost:4040/environmentに移行してSpark Shell UIをチェックしてみてください。
+そしてspark.serializerのプロパティがセットされているか確認して下さい。</p>
+<p><img alt="image03" src="../images/image03.png" /></p>
+<p>デフォルトでは、Kyroシリアライザはオフになっています。
+この練習では、Sparkシェル内のKyroシリアライザをオンにする手順を説明をします。
+まず、Sparkシェルを抜けてください（exitかctrl-cを入力）。</p>
+<p>テキストエディタ（EmacsやVimなど）でspark/conf/spark-env.shを開き、以下を付け加えてください。</p>
+<pre><code>SPARK_JAVA_OPTS+='
+　-Dspark.serializer=org.apache.spark.serializer.KryoSerializer
+　-Dspark.kyro.registrator=org.apache.spark.graphx.GraphKryoRegistrator ‘
+export SPARK_JAVA_OPTS
+</code></pre>
+
+<p>それか面倒な気分でしたら以下のコマンドをターミナルに貼ってください（SparkShellではなく）。</p>
+<pre><code>usb/$ echo -e &quot;SPARK_JAVA_OPTS+=' -Dspark.serializer=org.apache.spark.serializer.KryoSerializer -Dspark.kryo.registrator=org.apache.spark.graphx.GraphKryoRegistrator ' \nexport SPARK_JAVA_OPTS&quot; &gt;&gt; spark/conf/spark-env.sh
+</code></pre>
+
+<p>ここで、Spark Shellを再起動してもう一度環境状況をhttp://localhost:4040/environmentで見てみましょう。
+シリアライザプロパティがorg.apache.spark.serializer.KyroSerializerに設定されているはずです。</p>
+<h3 id="5-4-1"><font color="black">5-4-(1). 再起動</font></h3>
+<p>Sparkシェルを起動し、パッケージをインポートしてください。</p>
+<pre><code>training/ $ spark/bin/spark-shell
+scala&gt;
+
+import org.apache.spark.graphx._
+import org.apache.spark.rdd.RDD
+</code></pre>
+
+<h3 id="5-4-2"><font color="black">5-4-(2). ウィキペディア記事の読み込み</font></h3>
+<p>ウィキペディアは百科事典すべての記事を<a href="http://en.wikipedia.org/wiki/Wikipedia:Database_download#English-language_Wikipedia">XML状の塊</a>として提供しています。
+最新のものは44GBありますので、前処理とフィルターを（もちろんSparkとGraphXを使って）行ってUSBドライブに収まりきる程度にしておきました。
+このトレーニングでは”Berkeley”の入った記事とその記事からリンクされている・している記事を切り取ってあります。
+この結果のデータセットは二つのファイルに記録されています。
+“data/graphx/graphx-wiki-vertices.txt”と”data/graphx/graphx-edges.txt”です。
+最初のファイルが記事のIDとタイトルを記録してあり、二個目がリンク構造を接続元-接続先IDペアとして記録されています。</p>
+<p>この二つのファイルをRDDにロードしてください。</p>
+<pre><code>scala&gt; val articles: RDD[String] = sc.textFile(&quot;data/graphx/graphx-wiki-vertices.txt&quot;)
+//articles: org.apache.spark.rdd.RDD[String] = data/graphx/graphx-wiki-vertices.txt MappedRDD[1] at textFile at &lt;console&gt;:16
+
+scala&gt; val links: RDD[String] = sc.textFile(&quot;data/graphx/graphx-wiki-edges.txt&quot;)
+//links: org.apache.spark.rdd.RDD[String] = data/graphx/graphx-wiki-edges.txt MappedRDD[3] at textFile at &lt;console&gt;:16
+</code></pre>
+
+<h3 id="5-4-3"><font color="black">5-4-(3). 最初の記事を見る</font></h3>
+<pre><code>articles.first
+// res1: String = 6598434222544540151      Adelaide Hanscom Leeson
+</code></pre>
+
+<h3 id="5-4-4"><font color="black">5-4-(4). グラフを作成する</font></h3>
+<p>さあ、記事とリンクを使ってバークレー大学に関わる記事のグラフを作りましょう。</p>
+<p>まずは記事の列を頂点IDとタイトルのペアに分解します。</p>
+<pre><code>scala&gt; val vertices = articles.map { line =&gt; val fields = line.split('\t'); (fields(0).toLong, fields(1)) }
+
+// vertices: org.apache.spark.rdd.RDD[(Long, String)] = MappedRDD[4] at map at &lt;console&gt;:18
+</code></pre>
+
+<p>次にリンクの列をプレースホルダーの０を加えて辺オブジェクトに分解します。</p>
+<pre><code>scala&gt; val edges = links.map { line =&gt; val fields = line.split('\t'); Edge(fields(0).toLong, fields(1).toLong, 0) }
+//edges: org.apache.spark.rdd.RDD[org.apache.spark.graphx.Edge[Int]] = MappedRDD[5] at map at &lt;console&gt;:18
+</code></pre>
+
+<p>最後にグラフコンストラクタを頂点RDD、辺RDD。デフォルトの頂点性質と一緒に呼んでグラフを作成します。
+デフォルトの頂点性質は頂点RDDに存在しない、辺で結ばれている頂点（リンクで繋がっている記事）の初期化に使います。
+このデータセットはすでに調和しないものは取り除かれていますが、現実のデータセットは整理されていません。
+壊れているリンク先はデフォルトの頂点性質を空のタイトル文字列として使います。</p>
+<p>ディスクからの再読み込みを防ぐためにキャッシュをしてからグラフを作成します。</p>
+<pre><code>scala&gt; val graph = Graph(vertices, edges, &quot;&quot;).cache()
+// graph: org.apache.spark.graphx.Graph[String,Int] = org.apache.spark.graphx.impl.GraphImpl@5b1e4029
+</code></pre>
+
+<p>グラフを強制的に計算させるために、何個の記事がこのグラフにあるかを数えましょう。</p>
+<pre><code>scala&gt; graph.vertices.count
+res2: Long = 22424
+</code></pre>
+
+<p>GraphXは最初のグラフが作成される時、すべての頂点のインデックスデータ構造を構築します。
+そして存在しない頂点の場所に代わりを分配します。
+トリプレットの計算処理は追加の統合を必要としますが、インデックスのおかげで速く動いてくれます。</p>
+<p>はじめに数個のトリプレットを見てみましょう。</p>
+<pre><code>scala&gt; graph.triplets.count
+res3: Long = 31312
+
+scala&gt; graph.triplets.take(5).foreach(println(_))
+((146271392968588,Computer Consoles Inc.),(7097126743572404313,Berkeley Software Distribution),0)
+((146271392968588,Computer Consoles Inc.),(8830299306937918434,University of California, Berkeley),0)
+((625290464179456,List of Penguin Classics),(1735121673437871410,George Berkeley),0)
+((1342848262636510,List of college swimming and diving teams),(8830299306937918434,University of California, Berkeley),0)
+((1889887370673623,Anthony Pawson),(8830299306937918434,University of California, Berkeley),0)
+</code></pre>
+
+<p>先ほど言った通り、データセット内のトリプレットは”Berkeley”の文字が接続元か接続先の記事タイトルに現れます。</p>
+<h3 id="5-4-5"><font color="black">5-4-(5). ページランクをウィキペディアで行う</font></h3>
+<p>次にグラフ分析を開始できます。この例では<a href="http://en.wikipedia.org/wiki/PageRank">ページランク</a>を使ってウィキペディアグラフ内の最も重要なページを評価します。
+<a href="http://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.graphx.lib.PageRank$">ページランク</a>は小さいながらも成長の続いている、GraphXにすでに実装された一般的なグラフアルゴリズムの一部です。
+実行方法は単純で複雑ではありません。
+単に初期設定のコード、頂点プログラム、メッセージコンバイナをPregelの送るだけでできます。</p>
+<p>graph.pageRankを使ってページランクを行う。</p>
+<pre><code>scala&gt; val prGraph = graph.pageRank(0.001).cache()
+// prGraph: org.apache.spark.graphx.Graph[Double,Double] = org.apache.spark.graphx.impl.GraphImpl@3153be16
+</code></pre>
+
+<p>この結果は頂点性質が各ページのページランク値を付けたグラフを返します。
+0.001のパラメータは許容誤差でページランクの境界値です。</p>
+<p>問題はprGraphがタイトルなどの最初の頂点性質を含んでおらずページランク値しか持っていないことです。
+しかし、元のgraphがその情報を持っています。
+そこで、頂点の統合を行うことでprGraphの頂点のランク値とgraphの頂点の記事タイトルを合わせることができます。
+出来上がるのが二つの情報を統合された新しいグラフで、頂点性質をタプル型としてセーブできます。
+そこでこの新しいリストからTop10の頂点を探すことやそれに一致する記事のタイトルをプリントするなどのテーブル型の操作をこの頂点に行うことが可能になります。
+これらの作業はを以下の操作を組み合わせると「バークレー」サブグラフのなかで重要性Top10のページを探ることができます。</p>
+<pre><code>scala&gt; val titleAndPrGraph = graph.outerJoinVertices(prGraph.vertices) { (v, title, rank) =&gt; (rank.getOrElse(0.0), title) }
+// titleAndPrGraph: org.apache.spark.graphx.Graph[(Double, String),Int] = org.apache.spark.graphx.impl.GraphImpl@7c7a6ea8
+
+
+scala&gt; titleAndPrGraph.vertices.top(10) { Ordering.by((entry: (VertexId, (Double, String))) =&gt; entry._2._1) }.foreach(t =&gt; println(t._2._2 + &quot;: &quot; + t._2._1))
+
+University of California, Berkeley: 1321.111754312097
+Berkeley, California: 664.8841977233583
+Uc berkeley: 162.50132743397873
+Berkeley Software Distribution: 90.4786038848606
+Lawrence Berkeley National Laboratory: 81.90404939641944
+George Berkeley: 81.85226118457985
+Busby Berkeley: 47.871998218019655
+Berkeley Hills: 44.76406979519754
+Xander Berkeley: 30.324075347288037
+Berkeley County, South Carolina: 28.908336483710308
+</code></pre>
+
+<p>これでGraphXのチュートリアルの章は終わりです。このままコードを触り続けることと<a href="http://spark.incubator.apache.org/docs/latest/graphx-programming-guide.html">GraphXのプログラミングガイド</a>をこのシステムの補足としてチェックすることをお勧めします。</p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
