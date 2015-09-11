@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+
+	<title>4. MLlib(機械学習) - AMPcamp-ja</title>
+
+        <link href="../css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="../css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href="..">AMPcamp-ja</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="..">目次</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../introduction/">1. はじめに</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../spark-sql/">2. Spark SQL</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../spark-streaming/">3. Sparkストリーミング</a>
+                    </li>
+                
+                
+                
+                    <li class="active">
+                        <a href="./">4. MLlib(機械学習)</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../graphx/">5. GraphX</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../sparkr/">6. SparkR</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="../pipeline/">7. パイプラインを使ってイメージ解析</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li >
+                        <a rel="next" href="../spark-streaming/">
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../graphx/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="http://github.com/m-kiuchi/AMPcamp-ja">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#4-mllib">4. MLlib(機械学習)</a></li>
+        
+            <li><a href="#4-1">4-1. データセットの説明</a></li>
+        
+            <li><a href="#4-2">4-2. 協調フィルタリング</a></li>
+        
+            <li><a href="#4-3">4-3. サンプルコードの実行</a></li>
+        
+            <li><a href="#4-4-1-">4-4. 解説(1)-データの読み出し</a></li>
+        
+            <li><a href="#4-5-2-">4-5. 解説(2)-データの分割</a></li>
+        
+            <li><a href="#4-6-3-als">4-6. 解説(3)-ALSを用いたトレーニング</a></li>
+        
+            <li><a href="#4-7">4-7. あなたにお勧めする映画</a></li>
+        
+            <li><a href="#4-8">4-8. エクササイズ</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="4-mllib">4. MLlib(機械学習)</h1>
+<p>この章では「パーソナライズされた映画のリコメンド」という実例を通じて機械学習を学びます。
+ここで使用するデータは、<a href="https://movielens.org/">MovieLens</a>によって取得された、ユーザが実際に映画を評価したデータ群で、以下のような規模のものです。</p>
+<ul>
+<li>リコメンド総数：約1,000万件</li>
+<li>ユーザ数：約72,000ユーザ</li>
+<li>映画の種類：約10,000本</li>
+</ul>
+<p>上記のデータは、training/data/movielens/largeに格納されています。
+また高速に処理を行うためにデータ規模を小さくしたものがtraining/data/movielens/mediumに格納されています。
+このデータは以下のような規模にそれぞれ縮小したデータセットです。</p>
+<ul>
+<li>リコメンド総数：約100万件</li>
+<li>ユーザ数：約6,000ユーザ</li>
+<li>映画の種類：約4,000本</li>
+</ul>
+<h2 id="4-1">4-1. データセットの説明</h2>
+<p>training/data/movielens/mediun ディレクトリの中を見ると、以下のようなファイルが入っていることがわかります。</p>
+<pre><code>$ cd ${HOME}/training/data/movielens/medium
+$ ls -lh
+合計 24M
+-rw-r--r-- 1 kiuchi kiuchi    0  6月 19  2014 Icon
+-rw------- 1 kiuchi kiuchi 5.1K  6月 19  2014 README
+-rw------- 1 kiuchi kiuchi 168K  6月 19  2014 movies.dat
+-rw------- 1 kiuchi kiuchi  24M  6月 19  2014 ratings.dat
+-rw------- 1 kiuchi kiuchi 132K  6月 19  2014 users.dat
+[kiuchi@spark-single medium]$
+</code></pre>
+
+<p>これから使用するのは “ratings.dat” と “movies.dat” です。
+“ratings.dat”の内容はテキストデータで、以下のフォーマットで格納されています。</p>
+<p><code>&lt;ユーザID&gt;:&lt;ムービーID&gt;::&lt;評価&gt;::&lt;タイムスタンプ&gt;</code></p>
+<p>また “movies.dat” の内容は同様に以下のフォーマットのテキストデータです。</p>
+<p><code>&lt;ムービーID&gt;::&lt;映画のタイトル&gt;::&lt;映画のジャンル&gt;</code></p>
+<h2 id="4-2">4-2. 協調フィルタリング</h2>
+<p>協調フィルタリングとは、リコメンドエンジンに一般的に用いられているアルゴリズムで、表の中の空欄を、実際に埋めた場合にそうなると思われる値を算出します。
+ここでいう”表”とは今回の場合、”ユーザ”と”映画”をそれぞれ軸に持ち、それぞれの欄に”評価”が入っている表になります。
+Sparkは現時点では「モデルベース協調フィルタリング」を実装しており、それによって表中の空欄に入る値を算出します。
+その際に、同様にSparkが有する「交互最小二乗法(Alternating Least Squares, ALS)<a href="#[8]">[8]</a>」によって潜在変数セットを算出し、傾向性を算出します。</p>
+<p><img alt="image20" src="../images/image20.png" /></p>
+<h2 id="4-3">4-3. サンプルコードの実行</h2>
+<p>それでは実際のサンプルコードを見てみましょう。</p>
+<p><code>training/machine-learning/scala/solution/MovieLensALS.scala</code></p>
+<pre><code>import java.io.File
+
+import scala.io.Source
+
+import org.apache.log4j.Logger
+import org.apache.log4j.Level
+
+import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+import org.apache.spark.SparkContext._
+import org.apache.spark.rdd._
+import org.apache.spark.mllib.recommendation.{ALS, Rating, MatrixFactorizationModel}
+
+object MovieLensALS {
+
+  def main(args: Array[String]) {
+
+    Logger.getLogger(&quot;org.apache.spark&quot;).setLevel(Level.WARN)
+    Logger.getLogger(&quot;org.eclipse.jetty.server&quot;).setLevel(Level.OFF)
+
+    if (args.length != 2) {
+      println(&quot;Usage: /path/to/spark/bin/spark-submit --driver-memory 2g --class MovieLensALS &quot; +
+        &quot;target/scala-*/movielens-als-ssembly-*.jar movieLensHomeDir personalRatingsFile&quot;)
+      sys.exit(1)
+    }
+
+    // set up environment
+
+    val conf = new SparkConf()
+      .setAppName(&quot;MovieLensALS&quot;)
+      .set(&quot;spark.executor.memory&quot;, &quot;2g&quot;)
+    val sc = new SparkContext(conf)
+
+    // load personal ratings
+
+    val myRatings = loadRatings(args(1))
+    val myRatingsRDD = sc.parallelize(myRatings, 1)
+
+    // load ratings and movie titles
+
+    val movieLensHomeDir = args(0)
+
+    val ratings = sc.textFile(new File(movieLensHomeDir, &quot;ratings.dat&quot;).toString).map { line =&gt;
+      val fields = line.split(&quot;::&quot;)
+      // format: (timestamp % 10, Rating(userId, movieId, rating))
+      (fields(3).toLong % 10, Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble))
+    }
+
+    val movies = sc.textFile(new File(movieLensHomeDir, &quot;movies.dat&quot;).toString).map { line =&gt;
+      val fields = line.split(&quot;::&quot;)
+      // format: (movieId, movieName)
+      (fields(0).toInt, fields(1))
+    }.collect().toMap
+
+    val numRatings = ratings.count()
+    val numUsers = ratings.map(_._2.user).distinct().count()
+    val numMovies = ratings.map(_._2.product).distinct().count()
+
+    println(&quot;Got &quot; + numRatings + &quot; ratings from &quot;
+      + numUsers + &quot; users on &quot; + numMovies + &quot; movies.&quot;)
+
+    // split ratings into train (60%), validation (20%), and test (20%) based on the 
+    // last digit of the timestamp, add myRatings to train, and cache them
+
+    val numPartitions = 4
+    val training = ratings.filter(x =&gt; x._1 &lt; 6)
+      .values
+      .union(myRatingsRDD)
+      .repartition(numPartitions)
+      .cache()
+    val validation = ratings.filter(x =&gt; x._1 &gt;= 6 &amp;&amp; x._1 &lt; 8)
+      .values
+      .repartition(numPartitions)
+      .cache()
+    val test = ratings.filter(x =&gt; x._1 &gt;= 8).values.cache()
+
+    val numTraining = training.count()
+    val numValidation = validation.count()
+    val numTest = test.count()
+
+    println(&quot;Training: &quot; + numTraining + &quot;, validation: &quot; + numValidation + &quot;, test: &quot; + numTest)
+
+    // train models and evaluate them on the validation set
+
+    val ranks = List(8, 12)
+    val lambdas = List(0.1, 10.0)
+    val numIters = List(10, 20)
+    var bestModel: Option[MatrixFactorizationModel] = None
+    var bestValidationRmse = Double.MaxValue
+    var bestRank = 0
+    var bestLambda = -1.0
+    var bestNumIter = -1
+    for (rank &lt;- ranks; lambda &lt;- lambdas; numIter &lt;- numIters) {
+      val model = ALS.train(training, rank, numIter, lambda)
+      val validationRmse = computeRmse(model, validation, numValidation)
+      println(&quot;RMSE (validation) = &quot; + validationRmse + &quot; for the model trained with rank = &quot; 
+        + rank + &quot;, lambda = &quot; + lambda + &quot;, and numIter = &quot; + numIter + &quot;.&quot;)
+      if (validationRmse &lt; bestValidationRmse) {
+        bestModel = Some(model)
+        bestValidationRmse = validationRmse
+        bestRank = rank
+        bestLambda = lambda
+        bestNumIter = numIter
+      }
+    }
+
+    // evaluate the best model on the test set
+
+    val testRmse = computeRmse(bestModel.get, test, numTest)
+
+    println(&quot;The best model was trained with rank = &quot; + bestRank + &quot; and lambda = &quot; + bestLambda
+      + &quot;, and numIter = &quot; + bestNumIter + &quot;, and its RMSE on the test set is &quot; + testRmse + &quot;.&quot;)
+
+    // create a naive baseline and compare it with the best model
+
+    val meanRating = training.union(validation).map(_.rating).mean
+    val baselineRmse = 
+      math.sqrt(test.map(x =&gt; (meanRating - x.rating) * (meanRating - x.rating)).mean)
+    val improvement = (baselineRmse - testRmse) / baselineRmse * 100
+    println(&quot;The best model improves the baseline by &quot; + &quot;%1.2f&quot;.format(improvement) + &quot;%.&quot;)
+
+    // make personalized recommendations
+
+    val myRatedMovieIds = myRatings.map(_.product).toSet
+    val candidates = sc.parallelize(movies.keys.filter(!myRatedMovieIds.contains(_)).toSeq)
+    val recommendations = bestModel.get
+      .predict(candidates.map((0, _)))
+      .collect()
+      .sortBy(- _.rating)
+      .take(50)
+
+    var i = 1
+    println(&quot;Movies recommended for you:&quot;)
+    recommendations.foreach { r =&gt;
+      println(&quot;%2d&quot;.format(i) + &quot;: &quot; + movies(r.product))
+      i += 1
+    }
+
+    // clean up
+    sc.stop()
+  }
+
+  /** Compute RMSE (Root Mean Squared Error). */
+  def computeRmse(model: MatrixFactorizationModel, data: RDD[Rating], n: Long): Double = {
+    val predictions: RDD[Rating] = model.predict(data.map(x =&gt; (x.user, x.product)))
+    val predictionsAndRatings = predictions.map(x =&gt; ((x.user, x.product), x.rating))
+      .join(data.map(x =&gt; ((x.user, x.product), x.rating)))
+      .values
+    math.sqrt(predictionsAndRatings.map(x =&gt; (x._1 - x._2) * (x._1 - x._2)).reduce(_ + _) / n)
+  }
+
+  /** Load ratings from file. */
+  def loadRatings(path: String): Seq[Rating] = {
+    val lines = Source.fromFile(path).getLines()
+    val ratings = lines.map { line =&gt;
+      val fields = line.split(&quot;::&quot;)
+      Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble)
+    }.filter(_.rating &gt; 0.0)
+    if (ratings.isEmpty) {
+      sys.error(&quot;No ratings provided.&quot;)
+    } else {
+      ratings.toSeq
+    }
+  }
+}
+</code></pre>
+
+<p>以下のようにbuild.sbtを修正します。</p>
+<p><code>training/machine-learning/scala/build.sbt</code></p>
+<pre><code>import AssemblyKeys._
+
+assemblySettings
+
+name := &quot;movielens-als&quot;
+
+version := &quot;0.1&quot;
+
+scalaVersion := &quot;2.10.4&quot;
+
+libraryDependencies += &quot;org.apache.spark&quot; % &quot;spark-mllib_2.10&quot; % &quot;1.4.1&quot; % &quot;provided&quot;
+</code></pre>
+
+<p>以下のようにbuild.propertiesファイルを作成します。</p>
+<p><code>training/machine-learning/scala/project/build.properties</code></p>
+<pre><code>sbt.version=0.13.8
+</code></pre>
+
+<p>以下のようにサンプルデータを作成します。</p>
+<pre><code>$ cd ${HOME}/training/machine-learning/
+$ cp personalRatings.txt.template personalRatings.txt
+</code></pre>
+
+<p>作成したpersonalRatings.txtを編集し、”?”を1～5の数値に置き換えます。
+これがこれらの映画に対するあなたの評価になります。</p>
+<p><code>training/machine-learning/personalRatings.txt</code></p>
+<pre><code>0::1::?::1400000000::Toy Story (1995)
+0::780::?::1400000000::Independence Day (a.k.a. ID4) (1996)
+0::590::?::1400000000::Dances with Wolves (1990)
+0::1210::?::1400000000::Star Wars: Episode VI - Return of the Jedi (1983)
+0::648::?::1400000000::Mission: Impossible (1996)
+0::344::?::1400000000::Ace Ventura: Pet Detective (1994)
+0::165::?::1400000000::Die Hard: With a Vengeance (1995)
+0::153::?::1400000000::Batman Forever (1995)
+0::597::?::1400000000::Pretty Woman (1990)
+0::1580::?::1400000000::Men in Black (1997)
+0::231::?::1400000000::Dumb &amp; Dumber (1994)
+</code></pre>
+
+<p>以下のようにコンパイルします。</p>
+<pre><code>$ cd ${HOME}
+$ cd training/machine-learning/scala/
+$ mkdir build
+$ cd build
+$ ln -s ${HOME}/spark-1.4.1/sbt/bin/sbt-launch.jar ./sbt-launch-0.13.8.jar
+$ cd ..
+$ cp solution/MovieLensALS.scala .
+$ ${HOME}/spark-1.4.1/sbt/sbt assembly
+</code></pre>
+
+<p>以下のように実行すると、あなたの評価に基づくおすすめの映画がリストアップされます。</p>
+<pre><code>$ SPARK_MEM=4g ~/spark-1.4.1/bin/spark-submit --class MovieLensALS target/scala-2.10/movielens-als-assembly-0.1.jar ~/training/data/movielens/medium/ ../personalRatings.txt
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+15/06/28 22:39:13 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+15/06/28 22:39:14 INFO Slf4jLogger: Slf4jLogger started
+15/06/28 22:39:14 INFO Remoting: Starting remoting
+15/06/28 22:39:14 INFO Remoting: Remoting started; listening on addresses :[akka.tcp://sparkDriver@192.168.20.97:49233]
+(略)
+Movies recommended for you:
+ 1: Conceiving Ada (1997)
+ 2: Love Serenade (1996)
+ 3: Guantanamera (1994)
+ 4: Belly (1998)
+ 5: Stiff Upper Lips (1998)
+ 6: Saltmen of Tibet, The (1997)
+ 7: Good Earth, The (1937)
+ 8: Across the Sea of Time (1995)
+ 9: Smashing Time (1967)
+10: Spitfire Grill, The (1996)
+11: Firelight (1997)
+12: For Love of the Game (1999)
+13: First Love, Last Rites (1997)
+14: Duets (2000)
+15: Window to Paris (1994)
+16: Ayn Rand: A Sense of Life (1997)
+17: King and I, The (1999)
+18: Better Than Chocolate (1999)
+19: Brother Minister: The Assassination of Malcolm X (1994)
+20: Bewegte Mann, Der (1994)
+21: Crazy in Alabama (1999)
+22: Zachariah (1971)
+23: And the Ship Sails On (E la nave va) (1984)
+24: Mr. Jones (1993)
+25: Jakob the Liar (1999)
+26: Among Giants (1998)
+27: Dangerous Beauty (1998)
+28: No Mercy (1986)
+29: Small Wonders (1996)
+30: Against All Odds (1984)
+31: I'm the One That I Want (2000)
+32: Steal Big, Steal Little (1995)
+33: H.O.T.S. (1979)
+34: Cement Garden, The (1993)
+35: Stealing Home (1988)
+36: I Love You, Don't Touch Me! (1998)
+37: City of Angels (1998)
+38: Wisdom (1986)
+39: Gossip (2000)
+40: Where the Heart Is (2000)
+41: Long Walk Home, The (1990)
+42: Horseman on the Roof, The (Hussard sur le toit, Le) (1995)
+43: Steel Magnolias (1989)
+44: Eighth Day, The (Le Huiti�me jour ) (1996)
+45: Patch Adams (1998)
+46: Armageddon (1998)
+47: Best Laid Plans (1999)
+48: Rules of Engagement (2000)
+49: Jupiter's Wife (1994)
+50: Mr. Holland's Opus (1995)
+15/06/28 22:40:26 INFO RemoteActorRefProvider$RemotingTerminator: Shutting down remote daemon.
+15/06/28 22:40:26 INFO RemoteActorRefProvider$RemotingTerminator: Remote daemon shut down; proceeding with flushing remote transports.
+15/06/28 22:40:27 INFO RemoteActorRefProvider$RemotingTerminator: Remoting shut down.
+$ 
+</code></pre>
+
+<h2 id="4-4-1-">4-4. 解説(1)-データの読み出し</h2>
+<p>それでは個々の処理内容について解説します。</p>
+<pre><code>    val conf = new SparkConf()
+      .setAppName(&quot;MovieLensALS&quot;)
+      .set(&quot;spark.executor.memory&quot;, &quot;2g&quot;)
+    val sc = new SparkContext(conf)
+</code></pre>
+
+<p>Sparkにおけるどのような処理であっても、最初にSparkConfオブジェクトを作成し、SparkContextオブジェクトを作成する際の引数として与えます。
+spark-submitコマンドで理解される、アプリケーション名”MovieLensALS”と、必要なメモリ量”2g(=2GB)”を指定します。
+アプリケーション名はWebUI(http://<sparkホスト>:4040)にも表示されるため、各種情報を判別するのに役立ちます。</p>
+<pre><code>     val movieLensHomeDir = args(0)
+
+    val ratings = sc.textFile(new File(movieLensHomeDir, &quot;ratings.dat&quot;).toString).map { line =&gt;
+      val fields = line.split(&quot;::&quot;)
+      // format: (timestamp % 10, Rating(userId, movieId, rating))
+      (fields(3).toLong % 10, Rating(fields(0).toInt, fields(1).toInt, fields(2).toDouble))
+    }
+</code></pre>
+
+<p>次に”ratings.dat”ファイルから映画の評価データを読み込みます。
+評価データファイルはテキストファイルであり、”：：(コロン コロン)”が区切り文字であることを思い出してください。
+上記のコードは評価データの各行を読み出し、”：：”で区切ったものを要素にもつタプル型に変換し、RDDを作成します。
+要素の中のタイムスタンプについては最後の１文字(もともとのタイムスタンプを10で割った余り)をランダムキーとして使用しています。
+Ratingクラスは”ユーザID(Int)”、”ムービーID(Int)”、”評価(Double)”で構成されるタプル型のラッパークラスになっています。</p>
+<pre><code>    val movies = sc.textFile(new File(movieLensHomeDir, &quot;movies.dat&quot;).toString).map { line =&gt;
+      val fields = line.split(&quot;::&quot;)
+      // format: (movieId, movieName)
+      (fields(0).toInt, fields(1))
+    }.collect().toMap
+</code></pre>
+
+<p>上記のコードは、同様に”movies.dat”ファイルから映画データを読み込み、タプル型に変換した上でRDDを生成し、最後にtoMap関数でマップ(キー, 値のセット)に変換します。</p>
+<pre><code>    val numRatings = ratings.count()
+    val numUsers = ratings.map(_._2.user).distinct().count()
+    val numMovies = ratings.map(_._2.product).distinct().count()
+
+    println(&quot;Got &quot; + numRatings + &quot; ratings from &quot;
+      + numUsers + &quot; users on &quot; + numMovies + &quot; movies.&quot;)
+</code></pre>
+
+<p>上記のコードで何個の評価データ、映画データを読み込んだかを表示します。</p>
+<h2 id="4-5-2-">4-5. 解説(2)-データの分割</h2>
+<p>これからMLlibの関数であるALSを使い、RDD[Rating]を入力とするMatrixFactorizationModelをトレーニングします。</p>
+<p>ALSはトレーニング用のパラメータとして、Matrix FactorとRegurarization Constantsを持っています。</p>
+<p>最適な組み合わせを見つけるために、これからデータを3つのオーバーラップしないサブセットに分割します。
+それぞれ以下のようになります。</p>
+<ul>
+<li>training: トレーニング用</li>
+<li>test: テスト用</li>
+<li>validation: 評価用</li>
+</ul>
+<p>データを分割するために、日付の最後の一桁を使用し、キャッシュします。</p>
+<p>まずtrainingデータセットを基に複数のモデルをトレーニングし、RMSE(Root Mean Squared Error)を基にしたvalidationデータセットで評価します。
+最後にtestデータセットで最適なモデルを決定しました。
+またtrainingデータセットに、あなたの評価(training/machine-learning/personalRatings.txtでセットしたもの)を含め、リコメンドのために使用します。
+training, validation, testデータセットはいずれも複数回読み出されるため、それぞれcache()命令を呼び出すことでメモリ上にキャッシュされます。</p>
+<p>Matrix Factorization: 行列因子分解。次元削減手法の一つ。(<a href="http://qiita.com/ysks3n/items/c81ff24da0390a74fc6c">参考</a>),(<a href="http://tech.albert2005.co.jp/blog/2014/10/31/spark-mllib-collaborative-filtering-1/">参考</a>)</p>
+<pre><code>    val numPartitions = 4
+    val training = ratings.filter(x =&gt; x._1 &lt; 6)
+      .values
+      .union(myRatingsRDD)
+      .repartition(numPartitions)
+      .cache()
+    val validation = ratings.filter(x =&gt; x._1 &gt;= 6 &amp;&amp; x._1 &lt; 8)
+      .values
+      .repartition(numPartitions)
+      .cache()
+    val test = ratings.filter(x =&gt; x._1 &gt;= 8).values.cache()
+
+    val numTraining = training.count()
+    val numValidation = validation.count()
+    val numTest = test.count()
+
+    println(&quot;Training: &quot; + numTraining + &quot;, validation: &quot; + numValidation + &quot;, test: &quot; + numTest)
+</code></pre>
+
+<p>データの分割後、それぞれのデータセットの個数は以下のようになります。</p>
+<p><code>Training: 602251, validation: 198919, test: 199049.</code></p>
+<h2 id="4-6-3-als">4-6. 解説(3)-ALSを用いたトレーニング</h2>
+<p>ここではALS.trainを用いていくつかのモデルをトレーニングし、評価したのちに最適なモデルを選択します。</p>
+<p>ALSのトレーニングパラメータには、rank(潜在因子の数)、lambda(Regularization Constant, 正則化定数)、iterations(繰り返し回数)があります。
+ALS.trainメソッドは以下のように使用されます。</p>
+<pre><code>    val ranks = List(8, 12)
+    val lambdas = List(1.0, 10.0)
+    val numIters = List(10, 20)
+    var bestModel: Option[MatrixFactorizationModel] = None
+    var bestValidationRmse = Double.MaxValue
+    var bestRank = 0
+    var bestLambda = -1.0
+    var bestNumIter = -1
+    for (rank &lt;- ranks; lambda &lt;- lambdas; numIter &lt;- numIters) {
+      val model = ALS.train(training, rank, numIter, lambda)
+      val validationRmse = computeRmse(model, validation, numValidation)
+      println(&quot;RMSE (validation) = &quot; + validationRmse + &quot; for the model trained with rank = &quot; 
+        + rank + &quot;, lambda = &quot; + lambda + &quot;, and numIter = &quot; + numIter + &quot;.&quot;)
+      if (validationRmse &lt; bestValidationRmse) {
+        bestModel = Some(model)
+        bestValidationRmse = validationRmse
+        bestRank = rank
+        bestLambda = lambda
+        bestNumIter = numIter
+      }
+    }
+</code></pre>
+
+<p>理想的にはベストなモデルを探索するためには各パラメータの変更範囲を大きくすることが望ましいのですが、処理時間の制約から、今回は以下のパラメータで8モデルの組み合わせを評価することにします。</p>
+<ul>
+<li>rank(2個): 8 および 12</li>
+<li>lambda(2個): 1.0 および 10.0</li>
+<li>iteration(2個): 10 および 20</li>
+</ul>
+<p>そして提供されているメソッドであるcomputeRmseを使って各モデルそれぞれでvalidation（サブセット）のRMSEを計算します。
+validationのRMSEが一番小さかったモデルが選ばれ、そのモデルのtestセットのRMSEが最終計量として使われます。</p>
+<p>Sparkはモデルをトレーニングするのに1～2分掛かるかもしれません。
+出来ましたらスクリーン上に以下が見えるはずです。
+実行ごとに答え自体が多少異なるかもしれません。</p>
+<p><code>The best model was trained with rank 8 and lambda 10.0, and numIter = 10, and its RMSE on test is 0.8808492431998702.</code></p>
+<h2 id="4-7">4-7. あなたにお勧めする映画</h2>
+<p>このチュートリアルの最後の部分として、モデルがあなたにどんな映画をお勧めするかを見てみましょう。</p>
+<p>すべての予想が出ましたら、お勧めTop50をリストさせてあなたに合っているかを確かめて下さい。</p>
+<pre><code>val myRatedMovieIds = myRatings.map(_.product).toSet
+    val candidates = sc.parallelize(movies.keys.filter(!myRatedMovieIds.contains(_)).toSeq)
+    val recommendations = bestModel.get
+      .predict(candidates.map((0, _)))
+      .collect()
+      .sortBy(- _.rating)
+      .take(50)
+
+    var i = 1
+    println(&quot;Movies recommended for you:&quot;)
+    recommendations.foreach { r =&gt;
+      println(&quot;%2d&quot;.format(i) + &quot;: &quot; + movies(r.product))
+      i += 1
+    }
+</code></pre>
+
+<p>以下の出力と似ているはずです。</p>
+<pre><code>Movies recommended for you:
+ 1: Silence of the Lambs, The (1991)
+ 2: Saving Private Ryan (1998)
+ 3: Godfather, The (1972)
+ 4: Star Wars: Episode IV - A New Hope (1977)
+ 5: Braveheart (1995)
+ 6: Schindler's List (1993)
+ 7: Shawshank Redemption, The (1994)
+ 8: Star Wars: Episode V - The Empire Strikes Back (1980)
+ 9: Pulp Fiction (1994)
+10: Alien (1979)
+...
+</code></pre>
+
+<p>結果が違うことがあり得ることとデータセットが古いのでここ10年の映画は出てこないことを理解してください。</p>
+<h2 id="4-8">4-8. エクササイズ</h2>
+<h3 id="4-8-1"><font color="black">4-8-(1). ナイーブベースラインと比較する</font></h3>
+<p>ALSは意味のあるモデルを出力しますか？
+これを確かめるに評価結果を平均的な評価しか出力しないナイーブベースラインモデルと比較します。
+ベースラインのRMSEを計算するのは複雑ではありません。</p>
+<pre><code>val meanRating = training.union(validation).map(_.rating).mean
+    val baselineRmse = 
+      math.sqrt(test.map(x =&gt; (meanRating - x.rating) * (meanRating - x.rating)).mean)
+    val improvement = (baselineRmse - testRmse) / baselineRmse * 100
+    println(&quot;The best model improves the baseline by &quot; + &quot;%1.2f&quot;.format(improvement) + &quot;%.&quot;)
+</code></pre>
+
+<p>出力は以下と似ているはずです。</p>
+<p><code>The best model improves the baseline by 20.96%.</code></p>
+<p>トレーニングされたモデルはナイーブベースラインより成果を出すことは明らかなようです。
+しかし間違ったトレーニングパラメータを組み合わせるとナイーブベースラインより悪い結果を出すモデルができます。
+なので正しいパラメータのセットを選ぶことがこのタスクではかなり重要です。</p>
+<h3 id="4-8-2"><font color="black">4-8-(2). マトリックス因子を加える</font></h3>
+<p>このチュートリアルはトレーニングセットにあなたの評価を付け加えます。お勧めを出すより良い方法はまずMatrix Factorizationモデルをトレーニングして、モデルにあなたの評価を備えます。もしこの方法に興味が湧きましたらMatrixFactorizationModelの実行方法をみて新しいユーザのためにモデルに更新する方法を確認してください。</p>
+<p>もしあなたへのお勧めやソースコードが先に見たいならば、答えはmachine-learning/scala/solutionに載っています。</p>
+<hr />
+<p><a id="[8]"></a>
+[8] ALS: 交互最小二乗法 <a href="https://en.wikiversity.org/wiki/Least-Squares_Method#Lesson_1:_Introduction_to_Least-Squares_Method">参照1</a> <a href="https://ja.wikipedia.org/wiki/%E6%9C%80%E5%B0%8F%E4%BA%8C%E4%B9%97%E6%B3%95">参照2</a></p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="../js/jquery-1.10.2.min.js"></script>
+        <script src="../js/bootstrap-3.0.3.min.js"></script>
+        <script src="../js/highlight.pack.js"></script>
+        <script>var base_url = '..';</script>
+        <script data-main="../mkdocs/js/search.js" src="../mkdocs/js/require.js"></script>
+        <script src="../js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
