@@ -82,3 +82,8 @@ Sparkの機能についてトレーニングを行います。それぞれの機
 |SparkR              |少      |                                                                                            |
 |Pipeline            |多      |                                                                                            |
 |Tachyon             |中      |[プロジェクトサイト](http://tachyon-project.org/)                                           |
+
+## 1-3. 本文書について
+この文書はAMPLabの原文を元に木内満歳、渡辺冬樹、藤田真太郎が翻訳いたしました。
+Githubでのプルリクエストを歓迎いたします。
+本文書は、Apache Lisence 2.0 でライセンスしています。
