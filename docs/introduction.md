@@ -2,7 +2,7 @@
 
 
 本文書は、[Spark Summit 2014 Training hands-on exercises](https://databricks-training.s3.amazonaws.com/index.html), および[AMP Camp 5 - big data bootcamp](http://ampcamp.berkeley.edu/5/)を元に簡易に手順を記述し、自習者がApache Sparkをより簡便に理解する手助けをするための文章です。
-元のドキュメントから現行バージョン(1.4.1)に合わせて少し記述を変更している部分があります。本文書は、JDK 8 Update 45(Oracle公式版)、Spark 1.4.1 (2015/8/24時点の最新版)を前提に記述されています。
+元のドキュメントから執筆時のバージョン(1.4.1)に合わせて少し記述を変更している部分があります。本文書は、JDK 8 Update 45(Oracle公式版)、Spark 1.4.1 (2015/8/24時点)を前提に記述されています。
 
 ## 1-1. 用意するもの
 
@@ -59,7 +59,7 @@ Sparkの機能についてトレーニングを行います。それぞれの機
 
 |                           |Scala     |Java      |Python     |
 |:--------------------------|:---------|:---------|:----------|
-|インタラクティブSpark SQL  |YES       |NO        |YES        |
+|[インタラクティブSpark SQL](spark-sql.md)  |YES       |NO        |YES        |
 |Sparkストリーミング        |YES       |YES       |NO         |
 |機械学習 - MLlib           |YES       |NO        |YES        |
 |グラフ分析 - GraphX        |YES       |NO        |NO         |
