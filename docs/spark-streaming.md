@@ -3,7 +3,7 @@
 Sparkが持つSpark Streamingライブラリは非常にスケーラブルであり、高い可用性を持ったストリーム処理を行うことができます。
 
 このトレーニングでは、実際のtwitterのストリームデータを受け付け、処理するプログラムを作成します。
-プログラムはScala, Javaで記述することができます。(注：本書ではScalaのプログラムのみを取り上げます)
+プログラムはScala, Javaで記述することができます。(注：本書ではScalaプログラムのみを取り上げます)
 
 ## 3-1. トレーニング用ファイルの構成、事前に用意するもの
 トレーニング用ファイルは以下のような構成になっています
@@ -562,12 +562,12 @@ object Tutorial {
 ```
 
 同様の状況をブラウザからリアルタイムで視認することができます。
-http://<sparkホスト>:4040で確認すると、以下のようにstart, transform, foreachでそれぞれバッチが動作していることを確認することができます。
+http://sparkホスト:4040で確認すると、以下のようにstart, transform, foreachでそれぞれバッチが動作していることを確認することができます。
 
 ![image16](./images/image16.png)
 
 ## 3-7. ストリームのリアルタイムな状況確認
-Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視化によって、状態を確認することが可能です。http://\<sparkホスト\>:4040/streaming で、入力ストリームや、処理時間、処理の遅延を確認することができます。
+Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視化によって、状態を確認することが可能です。http://sparkホスト:4040/streaming で、入力ストリームや、処理時間、処理の遅延を確認することができます。
 
 ![image06](./images/image06.png)
 
@@ -582,7 +582,7 @@ Spark 1.4.0以降では、ストリームのリアルタイムな状況の可視
 
 ----------------------------------------------
 <a id="[2]"></a>
-[2] SBT: “Simple Build Tool”の略。Scala および Javaプロジェクトで使用される簡便なビルドツール。(参照: [https://github.com/harrah/xsbt/wiki](https://github.com/harrah/xsbt/wiki) , [http://www.scala-sbt.org/](http://www.scala-sbt.org/) )
+[2] SBT: “Simple Build Tool”の略。Scala および Javaプロジェクトで使用される簡便なビルドツール。(参照: [http://www.scala-sbt.org/](http://www.scala-sbt.org/) )
 
 <a id="[3]"></a>
 [3] [DStreamクラス](http://spark.apache.org/docs/0.7.3/api/streaming/spark/streaming/DStream.html): Spark Streaming Discretized Stream(Sparkにおける離散ストリーム)。このクラスを親として、個々のデータからRDDが生成される。 

@@ -59,7 +59,7 @@ Sparkの機能についてトレーニングを行います。それぞれの機
 
 |                           |Scala     |Java      |Python     |
 |:--------------------------|:---------|:---------|:----------|
-|[インタラクティブSpark SQL](spark-sql.md)  |YES       |NO        |YES        |
+|インタラクティブSpark SQL  |YES       |NO        |YES        |
 |Sparkストリーミング        |YES       |YES       |NO         |
 |機械学習 - MLlib           |YES       |NO        |YES        |
 |グラフ分析 - GraphX        |YES       |NO        |NO         |
@@ -75,16 +75,16 @@ Sparkの機能についてトレーニングを行います。それぞれの機
 
 |                    |分量    |参考資料                                                                                    |
 |:-------------------|:-------|:-------------------------------------------------------------------------------------------|
-|Spark SQL           |少      |[プログラミングガイド](http://spark.apache.org/docs/latest/sql-programming-guide.html)      |
-|Sparkストリーミング |中      |[プログラミングガイド](http://spark.apache.org/docs/latest/streaming-programming-guide.html)|
-|MLlib(機械学習)     |中      |[プログラミングガイド](http://spark.apache.org/docs/latest/mllib-guide.html)                |
-|GraphX(グラフ分析)  |多      |[プログラミングガイド](http://spark.apache.org/docs/latest/sql-programming-guide.html)      |
-|SparkR              |少      |                                                                                            |
-|Pipeline            |多      |                                                                                            |
+|[Spark SQL](spark-sql.md)           |少      |[プログラミングガイド](http://spark.apache.org/docs/latest/sql-programming-guide.html)      |
+|[Sparkストリーミング](spark-streaming.md) |中      |[プログラミングガイド](http://spark.apache.org/docs/latest/streaming-programming-guide.html)|
+|[MLlib(機械学習)](mllib.md)     |中      |[プログラミングガイド](http://spark.apache.org/docs/latest/mllib-guide.html)                |
+|[GraphX(グラフ分析)](graphx.md)  |多      |[プログラミングガイド](http://spark.apache.org/docs/latest/sql-programming-guide.html)      |
+|[SparkR](sparkr.md)              |少      |                                                                                            |
+|[Pipeline](pipeline.md)            |多      |                                                                                            |
 |Tachyon             |中      |[プロジェクトサイト](http://tachyon-project.org/)                                           |
 
 
 ## 1-3. 本文書について
-この文書はAMPLabの原文を元に、クリエーションライン（株）の木内満歳、渡辺冬樹、藤田真太郎が翻訳いたしました。
+この文書はAMPLabの原文を元に、AMPLabの許諾の下にクリエーションライン（株）の木内満歳、渡辺冬樹、藤田真太郎が翻訳いたしました。
 Githubでのプルリクエストを歓迎いたします。
 本文書は、Apache Lisence 2.0 でライセンスしています。
