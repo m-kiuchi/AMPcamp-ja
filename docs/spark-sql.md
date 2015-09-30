@@ -1,14 +1,14 @@
 # 2. Spark SQL
 Spark SQLはSparkの中でも最も新しいコンポーネントであり、SQLに似たインターフェイスを提供します。
 
-まずSpark Shellを起動します
+まずSpark Shellを起動します。
 
 ```
 $ cd ${HOME}
 $ SPARK_MEM=4g spark-1.4.1/bin/spark-shell
 ```
 
-起動したSpark ShellでSQLContextを宣言します
+起動したSpark ShellでSQLContextを宣言します。
 
 ```
 scala> val sqlContext = new org.apache.spark.sql.SQLContext(sc)
