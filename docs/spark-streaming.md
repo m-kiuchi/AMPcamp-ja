@@ -139,6 +139,8 @@ printメソッドは、statuses DStreamオブジェクトの最初の10個を出
 
 `ssc.checkpoint(checkpointDir)`
 
+*1.6.0バージョンではチェックポイントデータを格納するHDFSの設定が壊れている。コメントアウトするとバックアップは不可能だがジョブは流れます。
+
 最後にStreamingContextの実行を開始するよう指示します。DStreamオブジェクトへの操作は、この”ssc.start()”の前に書かれていることが必要です。
 
 ```
