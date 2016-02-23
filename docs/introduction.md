@@ -64,12 +64,13 @@ Sparkの機能についてトレーニングを行います。それぞれの機
 |                           |Scala     |Java      |Python     |
 |:--------------------------|:---------|:---------|:----------|
 |インタラクティブSpark SQL  |YES       |NO        |YES        |
-|Sparkストリーミング        |YES       |YES       |NO         |
+|Sparkストリーミング        |YES       |NO        |YES        |
 |機械学習 - MLlib           |YES       |NO        |YES        |
 |グラフ分析 - GraphX        |YES       |NO        |NO         |
 |SparkR                     |Rのみ     |Rのみ     |Rのみ      |
 |Pipeline                   |YES       |NO        |NO         |
-|Tachyon                    |NO        |YES       |NO         |
+|Tachyon                    |YES       |YES       |NO         |
+*1.6.0ではSparkStreamingはpythonに対応しております。
 
 それでは実際に個々の機能のトレーニングを始めましょう。
 以下の各項目のリンクをクリックすると実際のトレーニングに移動します。
