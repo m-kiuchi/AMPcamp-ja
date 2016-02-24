@@ -5,7 +5,7 @@ Spark SQLはSparkの中でも最も新しいコンポーネントであり、SQL
 
 ```
 $ cd ${HOME}
-$ SPARK_MEM=4g spark-1.4.1/bin/spark-shell
+$ SPARK_MEM=4g spark-1.6.0/bin/spark-shell
 ```
 
 起動したSpark ShellでSQLContextを宣言します。
