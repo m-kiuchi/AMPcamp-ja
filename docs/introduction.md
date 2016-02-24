@@ -2,11 +2,8 @@
 
 
 本文書は、[Spark Summit 2014 Training hands-on exercises](https://databricks-training.s3.amazonaws.com/index.html), および[AMP Camp 5 - big data bootcamp](http://ampcamp.berkeley.edu/5/)を元に簡易に手順を記述し、自習者がApache Sparkをより簡便に理解する手助けをするための文章です。
-元のドキュメントから執筆時のバージョン(1.4.1)に合わせて少し記述を変更している部分があります。本文書は、JDK 8 Update 45(Oracle公式版)、Spark 1.4.1 (2015/8/24時点)を前提に記述されています
+元のドキュメントから執筆時のバージョン(1.6.0)に合わせて少し記述を変更している部分があります。本文書は、JDK 8 Update 45(Oracle公式版)、Spark 1.6.0 (2016/2/24時点)を前提に記述されています
 
-*アップデート報告(2016/2/23)
-*現時点でSpark最新バージョンである1.6.0を使用し動作確認をしました。
-*修正必須の箇所は追記が置かれています。
 
 ## 1-1. 用意するもの
 
@@ -17,7 +14,7 @@ Linuxマシン：以下の要件を満たしていること
 - CPU: 2core以上(4core以上を推奨)
 - MEM: 4GB以上(6GB以上を推奨)
 - CentOS7以降(x86_64)
-- Java(JDK) 6もしくは7がインストールされていること(JDK 8 Update 60以降を推奨)
+- Java(JDK) 7もしくは8がインストールされていること(JDK 8 Update 60以降を推奨)
    - 【注意】
      - JREはNG。以下のコマンドが正常に完了しない
      - OpenJDKもNG。一見正常に終了するものの個々のトレーニングでは挙動が意図したとおりにならないことが多い。Oracle公式パッケージを使用すること
@@ -30,16 +27,16 @@ Linuxマシン：以下の要件を満たしていること
 # yum --nogpgcheck localinstall jdk-8u60-linux-x64.rpm
 
 rootから一般ユーザに変更
-$ wget http://ftp.riken.jp/net/apache/spark/spark-1.4.1/spark-1.4.1.tgz
-$ tar xzvf spark-1.4.1.tgz
-$ cd spark-1.4.1
+$ wget http://ftp.riken.jp/net/apache/spark/spark-1.6.0/spark-1.6.0.tgz
+$ tar xzvf spark-1.6.0.tgz
+$ cd spark-1.6.0
 $ build/mvn -Pyarn -Phadoop-2.4 -Dhadoop.version=2.4.0 -DskipTests clean package
 (所要時間: 約30～50分)
 $ wget https://dl.bintray.com/sbt/native-packages/sbt/0.13.9/sbt-0.13.9.zip
 $ unzip sbt-0.13.9.zip
 $ cd sbt/bin
 $ ln sbt-launch.jar sbt-launch-0.13.9.jar
-$ cd ${HOME}/spark-1.4.1/conf
+$ cd ${HOME}/spark-1.6.0/conf
 $ cp log4j.properties.template log4j.properties
 $ vi log4j.properties
 clog4j.rootCategory=WARN, console
@@ -70,7 +67,6 @@ Sparkの機能についてトレーニングを行います。それぞれの機
 |SparkR                     |Rのみ     |Rのみ     |Rのみ      |
 |Pipeline                   |YES       |NO        |NO         |
 |Tachyon                    |YES       |YES       |NO         |
-*1.6.0ではSparkStreamingはpythonに対応しております。
 
 それでは実際に個々の機能のトレーニングを始めましょう。
 以下の各項目のリンクをクリックすると実際のトレーニングに移動します。
