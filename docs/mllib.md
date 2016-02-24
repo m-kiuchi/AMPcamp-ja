@@ -233,9 +233,9 @@ name := "movielens-als"
 
 version := "0.1"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.5"
 
-libraryDependencies += "org.apache.spark" % "spark-mllib_2.10" % "1.4.1" % "provided"
+libraryDependencies += "org.apache.spark" % "spark-mllib_2.10" % "1.6.0" % "provided"
 ```
 
 以下のようにbuild.propertiesファイルを作成します。
@@ -243,7 +243,7 @@ libraryDependencies += "org.apache.spark" % "spark-mllib_2.10" % "1.4.1" % "prov
 `training/machine-learning/scala/project/build.properties`
 
 ```
-sbt.version=0.13.8
+sbt.version=0.13.9
 ```
 
 以下のようにサンプルデータを作成します。
@@ -279,16 +279,16 @@ $ cd ${HOME}
 $ cd training/machine-learning/scala/
 $ mkdir build
 $ cd build
-$ ln -s ${HOME}/spark-1.4.1/sbt/bin/sbt-launch.jar ./sbt-launch-0.13.8.jar
+$ ln -s ${HOME}/spark-1.6.0/sbt/bin/sbt-launch.jar ./sbt-launch-0.13.9.jar
 $ cd ..
 $ cp solution/MovieLensALS.scala .
-$ ${HOME}/spark-1.4.1/sbt/sbt assembly
+$ ${HOME}/spark-1.6.0/sbt/sbt assembly
 ```
 
 以下のように実行すると、あなたの評価に基づくおすすめの映画がリストアップされます。
 
 ```
-$ SPARK_MEM=4g ~/spark-1.4.1/bin/spark-submit --class MovieLensALS target/scala-2.10/movielens-als-assembly-0.1.jar ~/training/data/movielens/medium/ ../personalRatings.txt
+$ SPARK_MEM=4g ~/spark-1.6.0/bin/spark-submit --class MovieLensALS target/scala-2.10/movielens-als-assembly-0.1.jar ~/training/data/movielens/medium/ ../personalRatings.txt
 Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
 15/06/28 22:39:13 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 15/06/28 22:39:14 INFO Slf4jLogger: Slf4jLogger started
