@@ -139,7 +139,7 @@ printメソッドは、statuses DStreamオブジェクトの最初の10個を出
 
 `ssc.checkpoint(checkpointDir)`
 
-*1.6.0バージョンではチェックポイントデータを格納するHDFSの設定が壊れている。コメントアウトするとバックアップは不可能だがジョブは流れます。
+＊1.6.0バージョンではチェックポイントデータを格納するHDFSの設定が壊れています。3-4の実行の記述で詳細が記載されています。
 
 最後にStreamingContextの実行を開始するよう指示します。DStreamオブジェクトへの操作は、この”ssc.start()”の前に書かれていることが必要です。
 
@@ -246,7 +246,8 @@ Getting Scala 2.10.5 (for sbt)...
 $
 ```
 
-＊エラー事例
+--------------------------------------------------------
+＊エラー事例1 (sbtが正しくダウンロード、配置されていない)
 
 ```
 attempting to fetch sbt
@@ -255,7 +256,7 @@ attempting to fetch sbt
 Our attempt to download sbt locally to build/sbt-launch-0.13.8.jar failed. Please install sbt manually from http://www.scala-sbt.org の場合
 ```
 
-＊エラー修正
+＊エラー修正1
 
 ```
 {$SparkHome｝# wget https://dl.bintray.com/sbt/native-packages/sbt/0.13.9/sbt-0.13.9.zip
@@ -264,6 +265,7 @@ Our attempt to download sbt locally to build/sbt-launch-0.13.8.jar failed. Pleas
 # mkdir build
 # cp ~/spark-1.6.0/sbt/bin/sbt-launch.jar build/sbt-launch-0.13.9.jar
 ```
+---------------------------------------------------------
 
 これでSBTを使用してプロジェクト全体が再構成され、Tutorialクラスがコンパイルされました。
 出来上がった実行バイナリは、training/streaming/scala/target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar にあります。
@@ -273,7 +275,61 @@ Our attempt to download sbt locally to build/sbt-launch-0.13.8.jar failed. Pleas
 $ ../../../spark-1.6.0/bin/spark-submit --class Tutorial target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar
 ```
 
-以下のように1秒毎に、ストリーム入力としてのTwitterストリームを受け取り、statusプロパティ(つまりツイート内容)の先頭10個を表示します。終了するにはCtrl+Cを押します。
+----------------------------------------------------------
+＊エラー事例2 (HDFS上のチェックポイントディレクトリの設定が不正である)
+
+```
+$ ../../../spark-1.6.0/bin/spark-submit --class Tutorial target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar
+Hostname = not found
+
+Configuring Twitter OAuth
+        Property twitter4j.oauth.consumerKey set as [PmBFzDNb6wO5Sp7e5eahMcKcb]
+        Property twitter4j.oauth.accessToken set as [3248468990-fPIvjMn5vL6jQDoR775SQIUjoKITnn7KEkTADkf]
+        Property twitter4j.oauth.consumerSecret set as [K8DCy2rXxqPhVIJdxlvA6v2NHTHZpP9s1tJbPUilocS90tTPxk]
+        Property twitter4j.oauth.accessTokenSecret set as [4lvCjK7P1BSxnwG4XOVpu4UA2jubBzN6Yl3gcfpfhyqNS]
+
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+16/02/23 21:50:24 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+16/02/23 21:50:24 WARN Utils: Your hostname, yarai-watanabe-spark2.ocdet.org resolves to a loopback address: 127.0.0.1; using 128.199.196.244 instead (on interface eth0)
+16/02/23 21:50:24 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+16/02/23 21:50:26 INFO Slf4jLogger: Slf4jLogger started
+16/02/23 21:50:26 INFO Remoting: Starting remoting
+16/02/23 21:50:26 INFO Remoting: Remoting started; listening on addresses :[akka.tcp://sparkDriverActorSystem@128.199.196.244:42392]
+Exception in thread "main" java.io.IOException: Incomplete HDFS URI, no host: hdfs://not%20found:9000/checkpoint
+```
+
+＊エラー修正2
+
+二つ手段がある。
+
+	1. チェックポイントディレクトリを設けない。
+
+```/training/streaming/scala/Tutorial.scala
+
+   //ssc.checkpoint(checkpointDir)
+   
+```
+
+	2. 自前のHDFSのURLを設定する。
+
+```/training/streaming/scala/TutorialHelper.scala
+
+ /** Returns the HDFS URL */
+  def getCheckpointDirectory(): String = {
+    try {
+      val name : String = Seq("bash", "-c", "curl -s http://<HDFSのIPを貼る>/latest/meta-data/hostname") !! ;
+      println("Hostname = " + name)
+      "hdfs://" + name.trim + ":9000/checkpoint/"
+    } catch {
+      case e: Exception => {
+        "./checkpoint/"
+      }
+    }
+```
+HDFSのIPアドレスはHADOOP_HOME/etc/hadoop/core-site.xmlに記述されています。
+--------------------------------------------------------------
+
+正常に作動すると以下のように1秒毎に、ストリーム入力としてのTwitterストリームを受け取り、statusプロパティ(つまりツイート内容)の先頭10個を表示します。終了するにはCtrl+Cを押します。
 
 ```
 OpenJDK 64-Bit Server VM warning: ignoring option MaxPermSize=128m; support was removed in 8.0
