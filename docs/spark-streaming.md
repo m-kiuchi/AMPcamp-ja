@@ -199,10 +199,10 @@ import AssemblyKeys._ // put this at the top of the file
 
 name := "Tutorial"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.5"
 
-libraryDependencies += "org.apache.spark" % "spark-streaming_2.10" % "1.4.1"
-libraryDependencies += "org.apache.spark" % "spark-streaming-twitter_2.10" % "1.4.1"
+libraryDependencies += "org.apache.spark" % "spark-streaming_2.10" % "1.6.0"
+libraryDependencies += "org.apache.spark" % "spark-streaming-twitter_2.10" % "1.6.0"
 
 resourceDirectory in Compile := baseDirectory.value / "resources"
 
@@ -223,18 +223,18 @@ SBTのプロジェクトプロパティをセットします。
 `training/streaming/scala/project/build.properties`
 
 ```
-sbt.version=0.13.8
+sbt.version=0.13.9
 ```
 
 カレントディレクトリがtraining/streaming/scalaであることを確認したのちに、以下のコマンドを実行します。
 
 ```
-$ ../../../spark-1.4.1/sbt/sbt assembly
-Getting org.scala-sbt sbt 0.13.8 ...
+$ ../../../spark-1.6.0/sbt/sbt assembly
+Getting org.scala-sbt sbt 0.13.9 ...
 :: retrieving :: org.scala-sbt#boot-app
 	confs: [default]
 	44 artifacts copied, 0 already retrieved (13482kB/128ms)
-Getting Scala 2.10.4 (for sbt)...
+Getting Scala 2.10.5 (for sbt)...
 :: retrieving :: org.scala-sbt#boot-scala
 	confs: [default]
 	5 artifacts copied, 0 already retrieved (24459kB/66ms)
@@ -258,11 +258,11 @@ Our attempt to download sbt locally to build/sbt-launch-0.13.8.jar failed. Pleas
 ＊エラー修正
 
 ```
-{$SparkHome｝# wget https://dl.bintray.com/sbt/native-packages/sbt/0.13.8/sbt-0.13.8.zip
-#unzip sbt-0.13.8.zip
+{$SparkHome｝# wget https://dl.bintray.com/sbt/native-packages/sbt/0.13.9/sbt-0.13.9.zip
+#unzip sbt-0.13.9.zip
 # cd ~/training/streaming/scala/
 # mkdir build
-# cp ~/spark-1.4.1/sbt/bin/sbt-launch.jar build/sbt-launch-0.13.8.jar
+# cp ~/spark-1.6.0/sbt/bin/sbt-launch.jar build/sbt-launch-0.13.9.jar
 ```
 
 これでSBTを使用してプロジェクト全体が再構成され、Tutorialクラスがコンパイルされました。
@@ -270,7 +270,7 @@ Our attempt to download sbt locally to build/sbt-launch-0.13.8.jar failed. Pleas
 それではこの実行バイナリをspark-submitコマンドでSparkに投入します。
 
 ```
-$ ../../../spark-1.4.1/bin/spark-submit --class Tutorial target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar
+$ ../../../spark-1.6.0/bin/spark-submit --class Tutorial target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar
 ```
 
 以下のように1秒毎に、ストリーム入力としてのTwitterストリームを受け取り、statusプロパティ(つまりツイート内容)の先頭10個を表示します。終了するにはCtrl+Cを押します。
@@ -450,12 +450,12 @@ counts DStreamの配列をハッシュタグの個数順に並べ直すため、
 修正したプログラムを再度コンパイルします
 
 ```
-$ ../../../spark-1.4.1/sbt/sbt assembly
-Getting org.scala-sbt sbt 0.13.8 ...
+$ ../../../spark-1.6.0/sbt/sbt assembly
+Getting org.scala-sbt sbt 0.13.9 ...
 :: retrieving :: org.scala-sbt#boot-app
 	confs: [default]
 	44 artifacts copied, 0 already retrieved (13482kB/128ms)
-Getting Scala 2.10.4 (for sbt)...
+Getting Scala 2.10.5 (for sbt)...
 :: retrieving :: org.scala-sbt#boot-scala
 	confs: [default]
 	5 artifacts copied, 0 already retrieved (24459kB/66ms)
@@ -469,7 +469,7 @@ $
 
 コンパイルした実行バイナリをspark-submitコマンドでSparkに投入します
 
-`$ ../../../spark-1.4.1/bin/spark-submit --class Tutorial target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar`
+`$ ../../../spark-1.6.0/bin/spark-submit --class Tutorial target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar`
 
 以下のようにハッシュタグのTop10が表示されます。終了するにはCtrl+Cを押します。
 
