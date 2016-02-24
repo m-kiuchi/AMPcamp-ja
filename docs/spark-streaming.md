@@ -302,18 +302,18 @@ Exception in thread "main" java.io.IOException: Incomplete HDFS URI, no host: hd
 
 二つ手段がある。
 
-	1. チェックポイントディレクトリを設けない。
+1. チェックポイントディレクトリを設けない。
 
-```/training/streaming/scala/Tutorial.scala
 
+`/training/streaming/scala/Tutorial.scala`
+```
    //ssc.checkpoint(checkpointDir)
-   
 ```
 
-	2. 自前のHDFSのURLを設定する。
+2. 自前のHDFSのURLを設定する。
 
-```/training/streaming/scala/TutorialHelper.scala
-
+`/training/streaming/scala/TutorialHelper.scala`
+```
  /** Returns the HDFS URL */
   def getCheckpointDirectory(): String = {
     try {
