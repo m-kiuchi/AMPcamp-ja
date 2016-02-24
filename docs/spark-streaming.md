@@ -246,7 +246,6 @@ Getting Scala 2.10.5 (for sbt)...
 $
 ```
 
---------------------------------------------------------
 ＊エラー事例1 (sbtが正しくダウンロード、配置されていない)
 
 ```
@@ -265,7 +264,6 @@ Our attempt to download sbt locally to build/sbt-launch-0.13.8.jar failed. Pleas
 # mkdir build
 # cp ~/spark-1.6.0/sbt/bin/sbt-launch.jar build/sbt-launch-0.13.9.jar
 ```
----------------------------------------------------------
 
 これでSBTを使用してプロジェクト全体が再構成され、Tutorialクラスがコンパイルされました。
 出来上がった実行バイナリは、training/streaming/scala/target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar にあります。
@@ -275,7 +273,6 @@ Our attempt to download sbt locally to build/sbt-launch-0.13.8.jar failed. Pleas
 $ ../../../spark-1.6.0/bin/spark-submit --class Tutorial target/scala-2.10/Tutorial-assembly-0.1-SNAPSHOT.jar
 ```
 
-----------------------------------------------------------
 ＊エラー事例2 (HDFS上のチェックポイントディレクトリの設定が不正である)
 
 ```
@@ -303,16 +300,23 @@ Exception in thread "main" java.io.IOException: Incomplete HDFS URI, no host: hd
 二つ手段がある。
 
 1. チェックポイントディレクトリを設けない。
-
-
 `/training/streaming/scala/Tutorial.scala`
+`ssc.checkpoint(checkpointDir)`をコメントアウトする
 ```
-   //ssc.checkpoint(checkpointDir)
+// Your code goes here
+    val ssc = new StreamingContext(new SparkConf(), Seconds(1))
+    val tweets = TwitterUtils.createStream(ssc, None)
+    val statuses = tweets.map(status => status.getText())
+    statuses.print()
+    // ssc.checkpoint(checkpointDir)
+    ssc.start()
+    ssc.awaitTermination()
+  }
 ```
 
 2. 自前のHDFSのURLを設定する。
-
 `/training/streaming/scala/TutorialHelper.scala`
+`http://<HDFSのIPを貼る>/latest/meta-data/hostname")`のURLを変更する
 ```
  /** Returns the HDFS URL */
   def getCheckpointDirectory(): String = {
@@ -327,7 +331,6 @@ Exception in thread "main" java.io.IOException: Incomplete HDFS URI, no host: hd
     }
 ```
 HDFSのIPアドレスはHADOOP_HOME/etc/hadoop/core-site.xmlに記述されています。
---------------------------------------------------------------
 
 正常に作動すると以下のように1秒毎に、ストリーム入力としてのTwitterストリームを受け取り、statusプロパティ(つまりツイート内容)の先頭10個を表示します。終了するにはCtrl+Cを押します。
 
