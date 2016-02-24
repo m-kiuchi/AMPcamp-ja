@@ -299,7 +299,7 @@ Exception in thread "main" java.io.IOException: Incomplete HDFS URI, no host: hd
 
 二つ手段がある。
 
-1. チェックポイントディレクトリを設けない。
+a) チェックポイントディレクトリを設けない。
 
 `/training/streaming/scala/Tutorial.scala`
 
@@ -316,7 +316,7 @@ Exception in thread "main" java.io.IOException: Incomplete HDFS URI, no host: hd
   }
 ```
 
-2. 自前のHDFSのURLを設定する。
+b) 自前のHDFSのURLを設定する。
 
 `/training/streaming/scala/TutorialHelper.scala`
 
