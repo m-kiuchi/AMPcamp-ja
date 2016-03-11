@@ -39,7 +39,7 @@ $ ln sbt-launch.jar sbt-launch-0.13.9.jar
 $ cd ${HOME}/spark-1.6.0/conf
 $ cp log4j.properties.template log4j.properties
 $ vi log4j.properties
-clog4j.rootCategory=WARN, console
+log4j.rootCategory=WARN, console
 
 トレーニング用のデータを用意します
 $ cd ${HOME}
