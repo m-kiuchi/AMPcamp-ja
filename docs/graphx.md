@@ -362,6 +362,9 @@ olderGraph: org.apache.spark.graphx.Graph[User,Int] = org.apache.spark.graphx.im
 この制限されたグラフ内のコミュニティを考察してみます。
 
 ```
+scala> val cc = olderGraph.connectedComponents
+cc: org.apache.spark.graphx.Graph[org.apache.spark.graphx.VertexId,Int] = org.apache.spark.graphx.impl.GraphImpl@5813c42a
+
 scala> olderGraph.vertices.leftJoin(cc.vertices) { case (id, user, comp) => s"${user.name} is in component ${comp.get}" }.collect.foreach{ case (id, str) => println(str) }
 David is in component 4
 Fran is in component 3
