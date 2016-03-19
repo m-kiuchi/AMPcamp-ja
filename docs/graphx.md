@@ -390,19 +390,12 @@ GraphXは最適な性能を得るためにKyroシリアライザを必要とし�
 この練習では、Sparkシェル内のKyroシリアライザをオンにする手順を説明をします。
 まず、Sparkシェルを抜けてください（exitかctrl-cを入力）。
 
-テキストエディタ（EmacsやVimなど）でspark/conf/spark-env.shを開き、以下を付け加えてください。
+テキストエディタ（EmacsやVimなど）でspark/conf/spark-defaults.confを開き、以下を付け加えてください。
+(spark-defaults.confが存在しない場合は、spark-defaults.conf.templateをコピーして作成してください)
 
 ```
-SPARK_JAVA_OPTS+='
-　-Dspark.serializer=org.apache.spark.serializer.KryoSerializer
-　-Dspark.kyro.registrator=org.apache.spark.graphx.GraphKryoRegistrator ‘
-export SPARK_JAVA_OPTS
-```
-
-もしくは以下のコマンドをターミナルで実行してください（SparkShellではなく）。
-
-```
-usb/$ echo -e "SPARK_JAVA_OPTS+=' -Dspark.serializer=org.apache.spark.serializer.KryoSerializer -Dspark.kryo.registrator=org.apache.spark.graphx.GraphKryoRegistrator ' \nexport SPARK_JAVA_OPTS" >> spark/conf/spark-env.sh
+spark.serializer                   org.apache.spark.serializer.KryoSerializer
+spark.kryo.registrator             org.apache.spark.graphx.GraphKryoRegistrator
 ```
 
 ここで、Spark Shellを再起動してもう一度環境状況をhttp://sparkホスト:4040/environmentで見てみましょう。
